@@ -7,8 +7,9 @@ TO DOs:
 - [ ] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [ ] 2 players can connect via internal network, python-request library, Flask
 - [ ] implement Spit's logic
-- [ ] show winner at the end
-- [ ] print graphical cards onto screen
+- [ ] show winner at the end (scores)
+- [ ] Save score between games
+- [x] print graphical cards onto screen
 
 Gameplay:
 - [ ] Player can choose the card to be added to spit pile
