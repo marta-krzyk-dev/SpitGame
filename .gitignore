@@ -1,5 +1,3 @@
-syntax: glob
-
 venv/*
 hello.py
 __pycache__/*
