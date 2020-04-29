@@ -8,7 +8,7 @@ Game Play
 The game begins with each player playing the top card of his/her spit pile face up into the middle. Players then can move cards from the five piles in front of them in three ways.
 
 (1) Move cards into the middle with one rank higher or one rank lower than the card showing in the middle. Note that the ace will link the 2s and kings together.
-(2) If one of the player’s five piles is gone, a player can move a card to the empty space.
+(2) If one of the player's five piles is gone, a player can move a card to the empty space.
 (3) Cards with the same rank can be stacked on top of each other within the five piles. For example, a 5 can be played on another 5 within a player’s piles.
 
 When neither player can play a card into the middle, each player will flip another card onto the middle piles from his/her spit pile.
