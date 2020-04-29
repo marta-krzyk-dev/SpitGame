@@ -1,5 +1,4 @@
 def tryConvertToInt(value):
-
     if isinstance(value, str):
         value = value.strip()
 
@@ -9,8 +8,9 @@ def tryConvertToInt(value):
         return False
 
 
-def getFirst(iterable, default= ' '):
+def getFirst(iterable, default=' '):
     return iterable[0] if isinstance(iterable, list) and len(iterable) > 0 else default
+
 
 def getFirstElements(*elements):
     iterable = list(elements)
