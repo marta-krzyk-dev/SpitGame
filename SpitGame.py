@@ -70,8 +70,8 @@ class SpitGame(ConsoleInputOutputManipulator):
         deck = Deck()
         half1, half2 = deck.getHalves()
 
-        self.player1 = Player(name1, half1, self.pile_count, self.pile_names, "green")
-        self.player2 = Player(name2, half2, self.pile_count, self.pile_names, "magenta")
+        self.player1 = Player(name1, half1, self.pile_count, "green")
+        self.player2 = Player(name2, half2, self.pile_count, "magenta")
 
         self.current_player == self.player1
 
