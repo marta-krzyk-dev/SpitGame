@@ -19,3 +19,4 @@ Gameplay:
 - [ ] If both players cannot move a card, they both put any card to their spit piles
 - [ ] Game automatically moves a duplicate card to the left pile to reveal another card. This is repeated until no more duplicate moving is possible
 - [ ] If player has an empty pile, a card from right-most pile is moved to reveal another card. This is reperated till possible
+- [ ] Player can choose a card to be moved onto an empty spot
