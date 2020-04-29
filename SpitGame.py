@@ -21,13 +21,6 @@ class SpitGame(ConsoleInputOutputManipulator):
             "Q": 12,
             "J": 11
         }
-        self.pile_names = {
-            0: 'Q',
-            1: 'W',
-            2: 'E',
-            3: 'R',
-            4: 'T'
-        }
         self.CreatePlayers()
 
     def PrintScores(self):
