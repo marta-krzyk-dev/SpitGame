@@ -8,7 +8,7 @@ TO DOs:
 - [ ] 2 players can connect via internal network, python-request library, Flask
 - [ ] implement Spit's logic
 - [ ] show winner at the end (scores)
-- [ ] Save score between games
+- [ ] Save score between rounds
 - [x] print graphical cards onto screen
 
 Gameplay:
