@@ -10,6 +10,15 @@ TO DOs:
 - [ ] show winner at the end (scores)
 - [ ] Save score between rounds
 - [x] print graphical cards onto screen
+- [ ] Defect infinite loop when there are around 5 cards, some can be stacked onto 1 pile, then player is prompted to move card to an empty place
+- [ ] User can choose to move a stack a duplicated card with 'y' , 'n'
+
+TESTS use commands when:
+- [ ] Game prompts for player's names
+- [ ] Both users cannot move and they add cards to their spit piles
+- [ ] User chooses a card
+- [ ] User chooses a card to move to an empty spot
+- [ ] User agrees to stack cards onto another 
 
 Gameplay:
 - [ ] Player can choose the card to be added to spit pile
