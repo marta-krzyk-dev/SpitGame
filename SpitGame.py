@@ -1,5 +1,4 @@
 from termcolor import colored
-import os.path
 from Project4_Split.helpers import getFirst, tryConvertToInt, getFirstElements
 from Project4_Split.Deck import Deck
 from Project4_Split.Player import Player
@@ -22,12 +21,6 @@ class SpitGame(ConsoleInputOutputManipulator):
             "J": 11
         }
         self.CreatePlayers()
-
-    def PrintScores(self):
-        self.Print("*** SCORE ***")
-
-        self.Print(f"{self.player1.name} {self.player1.score} {('WINNING' if self.player1.score > self.player2.score else '')}")
-        self.Print(f"{self.player2.name} {self.player2.score} {('WINNING' if self.player2.score > self.player1.score else '')}")
 
     def PlayRound(self):
 
@@ -81,14 +74,6 @@ class SpitGame(ConsoleInputOutputManipulator):
         self.player2 = Player(name2, half2, self.pile_count, self.pile_names, "magenta")
 
         self.current_player == self.player1
-
-    def PrintTitle(self):
-        try:
-            with open("cards_art.txt", "r") as file:
-                art = file.read()
-                print(colored(f"{art}".center(50), "cyan", attrs=["bold"]))
-        except FileNotFoundError:
-            print(colored(f"***  SPIT GAME  ***".center(50), "cyan", attrs=["bold", "reverse"]))
 
     def AskForName(self, playerName):
         while True:
@@ -150,6 +135,70 @@ class SpitGame(ConsoleInputOutputManipulator):
     def Draw(self):
         return False
 
+    def ThereAreValidPairs(self, player):
+        spits = getFirstElements(self.player1.spit_pile, self.player2.spit_pile)
+
+        player_cards = player.GetFrontCards(omit_empty_piles=True)
+
+        for card in player_cards:
+            for spit in spits:
+                if self.IsValidPair(card, spit):
+                    return True  # There is at least 1 pair
+
+        return False
+
+    def ChangePlayer(self):
+        if self.current_player == self.player1:
+            self.current_player = self.player2
+            self.other_player = self.player1
+        else:
+            self.current_player = self.player1
+            self.other_player = self.player2
+
+    def ChooseSpit(self, player):
+        split_pile_number = tryConvertToInt(input(f"{player.name}, choose spit pile to add your cards (1 or 2): "))
+        if split_pile_number == 1:
+            return self.player1.spit_pile, self.player2.spit_pile
+        elif split_pile_number == 2:
+            return self.player2.spit_pile, self.player1.spit_pile
+        else:
+            print("Invalid pile. Try again.")
+
+    def RearrangeForPlayer(self, player):
+        while True:
+            while True:
+                if player.HasDuplicates():
+                    player.MoveFirstDuplicateToLeft()
+                    self.PrintGame()
+                else:
+                    break
+
+            while True:
+                can_move, empty_indexes = player.CanMoveCardToEmptySpot()
+                if can_move:
+                    player.MoveCardsToEmptySpots(empty_indexes)
+                    self.PrintGame()
+                else:
+                    break
+
+            if not player.HasDuplicates():
+                return
+
+    # PRINT METHODS
+    def PrintTitle(self):
+        try:
+            with open("cards_art.txt", "r") as file:
+                art = file.read()
+                print(colored(f"{art}".center(50), "cyan", attrs=["bold"]))
+        except FileNotFoundError:
+            print(colored(f"***  SPIT GAME  ***".center(50), "cyan", attrs=["bold", "reverse"]))
+
+    def PrintScores(self):
+        self.Print("*** SCORE ***")
+
+        self.Print(f"{self.player1.name} {self.player1.score} {('WINNING' if self.player1.score > self.player2.score else '')}")
+        self.Print(f"{self.player2.name} {self.player2.score} {('WINNING' if self.player2.score > self.player1.score else '')}")
+
     def PrintGame(self):
         # self.ClearConsole()
         print()
@@ -207,55 +256,6 @@ class SpitGame(ConsoleInputOutputManipulator):
         print(colored(row2.center(50), color, attrs=["bold"]))
         print(colored(row3.center(50), color, attrs=["bold"]))
         self.PrintCentered(row5)
-
-    def ThereAreValidPairs(self, player):
-        spits = getFirstElements(self.player1.spit_pile, self.player2.spit_pile)
-
-        player_cards = player.GetFrontCards(omit_empty_piles=True)
-
-        for card in player_cards:
-            for spit in spits:
-                if self.IsValidPair(card, spit):
-                    return True  # There is at least 1 pair
-
-        return False
-
-    def ChangePlayer(self):
-        if self.current_player == self.player1:
-            self.current_player = self.player2
-            self.other_player = self.player1
-        else:
-            self.current_player = self.player1
-            self.other_player = self.player2
-
-    def ChooseSpit(self, player):
-        split_pile_number = tryConvertToInt(input(f"{player.name}, choose spit pile to add your cards (1 or 2): "))
-        if split_pile_number == 1:
-            return self.player1.spit_pile, self.player2.spit_pile
-        elif split_pile_number == 2:
-            return self.player2.spit_pile, self.player1.spit_pile
-        else:
-            print("Invalid pile. Try again.")
-
-    def RearrangeForPlayer(self, player):
-        while True:
-            while True:
-                if player.HasDuplicates():
-                    player.MoveFirstDuplicateToLeft()
-                    self.PrintGame()
-                else:
-                    break
-
-            while True:
-                can_move, empty_indexes = player.CanMoveCardToEmptySpot()
-                if can_move:
-                    player.MoveCardsToEmptySpots(empty_indexes)
-                    self.PrintGame()
-                else:
-                    break
-
-            if not player.HasDuplicates():
-                return
 
     def PrintRound(self):
         art = f"\n\
