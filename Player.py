@@ -188,14 +188,16 @@ class Player(ConsoleInputOutputManipulator):
                 second_index = front_cards[index + 1:].index(card) + index + 1
                 #print(f"Found duplicate {card} at {second_index}")
 
-                self.Print(f"{self.name}, click Enter to stack duplicate card {card} from #{second_index + 1} to #{index + 1} pile")
+                while True:
+                    answer = self.GetInput(f"{self.name}, do you want to stack duplicate card {card} from #{second_index + 1} to #{index + 1} pile? (y/n)").strip()
+                    if self.IsCommand(answer) or len(answer) == 0:
+                        continue
+                    elif answer.startswith('y') or answer.startswith('n'):
+                        break
 
-                answer = self.GetInput()
-                if self.IsCommand(answer):
-                    continue
-
-                del self.card_piles[second_index][0]
-                self.card_piles[index].insert(0, card)
+                if answer.startswith('y'):
+                    del self.card_piles[second_index][0]
+                    self.card_piles[index].insert(0, card)
                 break
 
             index += 1

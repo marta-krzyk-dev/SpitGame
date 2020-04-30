@@ -47,7 +47,7 @@ class ConsoleInputOutputManipulator:
             return
 
         for p in paragraphDict:
-            self.PrintCentered(f"\n*** {p.upper()} ***\n", "blue", ['bold','reverse'])
+            self.Print(f"\n*** {p.upper()} ***\n", "blue", ['bold','reverse'])
             #print(colored(f"*** {p.upper()} ***".center(50), "blue", attrs=['bold','reverse']))
             print(colored(paragraphDict[p], "white", attrs=['bold']))
 
@@ -58,15 +58,16 @@ class ConsoleInputOutputManipulator:
         input = input.replace(" ", "").lower()
         return input == "--help" or input == "--resume"
 
-    def GetInput(self, message= "", inside_command= False):
-        answer = input(colored(message, self.font_color, attrs=["bold", "reverse"])).replace(" ", "").lower()  # Remove whitespaces
+    def GetInput(self, message="", inside_command= False):
+        answer = input(colored(message, self.font_color, attrs=["bold", "reverse"]))  # Remove whitespaces
+        formatted_answer = answer.replace(" ", "").lower()
 
-        if answer == "--help":
+        if formatted_answer == "--help":
             self.PrintInstructions()
             self.GetInput("Use --resume to go back to the game", inside_command=True)
-        elif answer == "--resume":
+        elif formatted_answer == "--resume":
             return answer
-        elif answer.startswith("--") or inside_command:
+        elif formatted_answer.startswith("--") or inside_command:
             print("Available commands:")
             print("--help       Print instructions")
             print("--resume     Resume the game")

@@ -14,17 +14,11 @@ class SpitGame(ConsoleInputOutputManipulator):
         self.current_player = None
         self.other_player = None
         self.round_number = 1
-        self.faceValues = {
-            "A": 14,
-            "K": 13,
-            "Q": 12,
-            "J": 11
-        }
-        self.CreatePlayers()
 
     def PlayRound(self):
 
         self.PrintRound()
+        self.PrintScores()
         self.round_number += 1
 
         while True:
@@ -32,8 +26,10 @@ class SpitGame(ConsoleInputOutputManipulator):
             self.ChangePlayer()
             self.PrintGame()
 
-            current_player_can_move = self.ThereAreValidPairs(self.current_player) or self.current_player.HasDuplicates() or self.current_player.CanMoveCardToEmptySpot()
-            other_player_can_move = self.ThereAreValidPairs(self.other_player) or self.other_player.HasDuplicates() or self.other_player.CanMoveCardToEmptySpot()
+            current_player_can_move = self.ThereAreValidPairs(
+                self.current_player) or self.current_player.HasDuplicates() or self.current_player.CanMoveCardToEmptySpot()
+            other_player_can_move = self.ThereAreValidPairs(
+                self.other_player) or self.other_player.HasDuplicates() or self.other_player.CanMoveCardToEmptySpot()
 
             if not current_player_can_move and other_player_can_move:
                 print(colored(f"{self.current_player.name}, you cannot move a card. You lose a round!",
@@ -41,10 +37,11 @@ class SpitGame(ConsoleInputOutputManipulator):
                 continue
             elif not current_player_can_move and not other_player_can_move:
                 # Each player can place 1 card onto their spits
-                self.Print(f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards. Choose a card to be placed onto your respective spit pile.")
+                self.Print(
+                    f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards. Choose a card to be placed onto your respective spit pile.")
                 self.current_player.MoveAnyCardToSpitPile()
                 self.other_player.MoveAnyCardToSpitPile()
-                self.ChangePlayer() # Stay with the same player for the next round
+                self.ChangePlayer()  # Stay with the same player for the next round
                 continue
 
             self.RearrangeForPlayer(self.current_player)
@@ -64,8 +61,8 @@ class SpitGame(ConsoleInputOutputManipulator):
         return player.spit_pile, player.spit_pile
 
     def CreatePlayers(self):
-        name1 = "Dolphin"  # AskForName("Player 1")
-        name2 = "Parrot"  # AskForName("Player 2")
+        name1 = "Dolphin"  # self.AskForName("Player 1") #  # AskForName("Player 1")
+        name2 = "Parrot"  # self.AskForName("Player 2", [name1])  # AskForName("Player 2")
 
         deck = Deck()
         half1, half2 = deck.getHalves()
@@ -75,13 +72,16 @@ class SpitGame(ConsoleInputOutputManipulator):
 
         self.current_player == self.player1
 
-    def AskForName(self, playerName):
+    def AskForName(self, playerName, existing_names=[]):
         while True:
-            name = input(f"{playerName} Enter your name >>")
+            name = self.GetInput(f"{playerName}, enter your name >>").strip()
+
+            if self.IsCommand(name):
+                continue
 
             if len(name) > 0:
-                if self.IsCommand(name):
-                    self.Command(name)
+                if name in existing_names:
+                    self.Print("Player with that name already exists.")
                 else:
                     return name
 
@@ -89,7 +89,7 @@ class SpitGame(ConsoleInputOutputManipulator):
 
         while True:
             pile_card, pile_index = player.ChooseCard()
-            #print(f"{player.name} chose {pile_card} of value {self.ConvertCardToNumericValue(pile_card)}")
+            # print(f"{player.name} chose {pile_card} of value {self.ConvertCardToNumericValue(pile_card)}")
 
             isValidPair1 = self.IsValidPair(pile_card, self.player1.spit_pile[0])
             isValidPair2 = self.IsValidPair(pile_card, self.player2.spit_pile[0])
@@ -106,7 +106,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.player1.spit_pile.insert(0, pile_card)
                 break
 
-        #print(f"Removing card {player.card_piles[pile_index][0]} from pile {pile_index}")
+        # print(f"Removing card {player.card_piles[pile_index][0]} from pile {pile_index}")
         del player.card_piles[pile_index][0]
 
     def IsValidPair(self, card1, card2):
@@ -125,8 +125,8 @@ class SpitGame(ConsoleInputOutputManipulator):
         card_as_number = tryConvertToInt(card)
 
         if not card_as_number:
-            if card in self.faceValues:
-                return self.faceValues[card]
+            if card in Deck.faceValues:
+                return Deck.faceValues[card]
             else:
                 raise ValueError
         else:
@@ -194,27 +194,39 @@ class SpitGame(ConsoleInputOutputManipulator):
             print(colored(f"***  SPIT GAME  ***".center(50), "cyan", attrs=["bold", "reverse"]))
 
     def PrintScores(self):
-        self.Print("*** SCORE ***")
 
-        self.Print(f"{self.player1.name} {self.player1.score} {('WINNING' if self.player1.score > self.player2.score else '')}")
-        self.Print(f"{self.player2.name} {self.player2.score} {('WINNING' if self.player2.score > self.player1.score else '')}")
+        max_name_len = 15  # max(len(self.player1.name), len(self.player2.name), len("PLAYER"))
+        score_len = 5
+        result_len = 7
+
+        result1, result2 = self.GetScoreResults(self.player1.score, self.player2.score)
+        row1 = f"{self.player1.name.ljust(max_name_len)} ║ {str(self.player1.score).center(score_len)} ║ {result1.ljust(result_len)}"
+        row2 = f"{self.player2.name.ljust(max_name_len)} ║ {str(self.player2.score).center(score_len)} ║ {result2.ljust(result_len)}"
+
+        self.Print("╔═" + "═" * max_name_len + "═╦═" + ("═" * score_len) + "═╦═" + ("═" * result_len) + "═╗")
+        self.Print(f"║ {'PLAYER'.center(max_name_len)} ║ SCORE ║ {'RESULT'.ljust(result_len)} ║")
+        self.Print("╠═" + "═" * max_name_len + "═╬═" + ("═" * score_len) + "═╬═" + ("═" * result_len) + "═╣")
+        self.Print(f"║ {row1} ║")
+        self.Print(f"║ {row2} ║")
+        self.Print("╚═" + "═" * max_name_len + "═╩═" + ("═" * score_len) + "═╩═" + ("═" * result_len) + "═╝")
 
     def PrintGame(self):
         # self.ClearConsole()
         print()
         self.player1.PrintCards(print_name_above_cards=True)
-        self.PrintStacks([self.player1.spit_pile, self.player2.spit_pile], self.player1.font_color, self.player2.font_color)
+        self.PrintStacks([self.player1.spit_pile, self.player2.spit_pile], self.player1.font_color,
+                         self.player2.font_color)
         self.player2.PrintCards(print_name_above_cards=False)
         print()
 
     def PrintStacks(self, card_piles, arrow_color1, arrow_color2, print_size_above_cards=False,
                     print_size_below_cards=False):
 
-        row_arrow_above = f" ▼          " # f"[{len(card_piles[0])}]  ▼          "
+        row_arrow_above = f" ▼          "  # f"[{len(card_piles[0])}]  ▼          "
         row1 = ""
         row2 = ""
         row3 = ""
-        row_arrow_below = f"       ▲" #   [{len(card_piles[1])}]"
+        row_arrow_below = f"       ▲"  # [{len(card_piles[1])}]"
         pile_sizes_row = ""
 
         for pile in card_piles:
@@ -261,6 +273,17 @@ class SpitGame(ConsoleInputOutputManipulator):
         art = f"\n\
   ^    ^    ^    ^    ^    ^  \n\
  / \  / \  / \  / \  / \  / \ \n\
-<_R_><_O_><_U_><_N_><_D_><{str(self.round_number).center(3,'_')}>"
+<_R_><_O_><_U_><_N_><_D_><{str(self.round_number).center(3, '_')}>"
 
         self.PrintCentered(art)
+
+    def GetScoreResults(self, score1, score2):
+        try:
+            if score1 == score2:
+                return 'DRAW', 'DRAW'
+            elif score1 < score2:
+                return 'LOOSING', 'WINNING'
+            else:
+                return 'WINNING', 'LOOSING'
+        except TypeError:
+            return 'UNKNOWN', 'UNKNOWN'

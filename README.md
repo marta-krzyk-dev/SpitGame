@@ -14,11 +14,11 @@ TO DOs:
 - [ ] User can choose to move a stack a duplicated card with 'y' , 'n'
 
 TESTS use commands when:
-- [ ] Game prompts for player's names
+- [x] Game prompts for player's names
 - [ ] Both users cannot move and they add cards to their spit piles
 - [ ] User chooses a card
 - [ ] User chooses a card to move to an empty spot
-- [ ] User agrees to stack cards onto another 
+- [x] User agrees to stack cards onto another 
 
 Gameplay:
 - [ ] Player can choose the card to be added to spit pile
