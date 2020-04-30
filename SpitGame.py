@@ -3,6 +3,7 @@ from Project4_Split.helpers import getFirst, tryConvertToInt, getFirstElements
 from Project4_Split.Deck import Deck
 from Project4_Split.Player import Player
 from Project4_Split.ConsoleInputOutputManipulator import ConsoleInputOutputManipulator
+from Project4_Split.card_helpers import IsValidPair
 
 
 class SpitGame(ConsoleInputOutputManipulator):
@@ -26,10 +27,9 @@ class SpitGame(ConsoleInputOutputManipulator):
             self.ChangePlayer()
             self.PrintGame()
 
-            current_player_can_move = self.ThereAreValidPairs(
-                self.current_player) # or self.current_player.HasDuplicates() or self.current_player.CanMoveCardToEmptySpot()
-            other_player_can_move = self.ThereAreValidPairs(
-                self.other_player) #or self.other_player.HasDuplicates() or self.other_player.CanMoveCardToEmptySpot()
+            spit_cards = getFirstElements(self.current_player.spit_pile, self.other_player.spit_pile)
+            current_player_can_move = self.current_player.CanMakeAMove(spit_cards)
+            other_player_can_move = self.other_player.CanMakeAMove(spit_cards)
 
             if not current_player_can_move and other_player_can_move:
                 print(colored(f"{self.current_player.name}, you cannot move a card. You lose a round!",
@@ -77,9 +77,9 @@ class SpitGame(ConsoleInputOutputManipulator):
 
         self.current_player == self.player1
 
-    def AskForName(self, playerName, existing_names=[], max_len=15):
+    def AskForName(self, temporary_player_name, existing_names=[], max_len=15):
         while True:
-            name = self.GetInput(f"{playerName}, enter your name >>").strip()
+            name = self.GetInput(f"{temporary_player_name}, enter your name >>").strip()
 
             if self.IsCommand(name):
                 continue
@@ -94,10 +94,10 @@ class SpitGame(ConsoleInputOutputManipulator):
 
         while True:
             pile_card, pile_index = player.ChooseCard()
-            # print(f"{player.name} chose {pile_card} of value {self.ConvertCardToNumericValue(pile_card)}")
+            # print(f"{player.name} chose {pile_card} of value {ConvertCardToNumericValue(pile_card)}")
 
-            isValidPair1 = self.IsValidPair(pile_card, self.player1.spit_pile[0])
-            isValidPair2 = self.IsValidPair(pile_card, self.player2.spit_pile[0])
+            isValidPair1 = IsValidPair(pile_card, self.player1.spit_pile[0])
+            isValidPair2 = IsValidPair(pile_card, self.player2.spit_pile[0])
 
             if isValidPair1 and not isValidPair2:
                 self.player1.spit_pile.insert(0, pile_card)
@@ -107,6 +107,10 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.player2.spit_pile.insert(0, pile_card)
                 break
 
+            elif not isValidPair1 and isValidPair2:
+                print(f"{pile_card} doesn't make a valid pair.")
+                break
+
             else:  # isValidPair1 and isValidPair2:
                 self.player1.spit_pile.insert(0, pile_card)
                 break
@@ -114,42 +118,7 @@ class SpitGame(ConsoleInputOutputManipulator):
         # print(f"Removing card {player.card_piles[pile_index][0]} from pile {pile_index}")
         del player.card_piles[pile_index][0]
 
-    def IsValidPair(self, card1, card2):
-
-        card1 = self.ConvertCardToNumericValue(card1)
-        card2 = self.ConvertCardToNumericValue(card2)
-        diff = abs(card1 - card2)
-
-        return diff < 2 or diff == 12  # Cards have 0, 1 or 12 value difference. (one card is 2, the other is A)
-
-    def ConvertCardToNumericValue(self, card):
-
-        if not (isinstance(card, str) or isinstance(card, int)):
-            raise TypeError
-
-        card_as_number = tryConvertToInt(card)
-
-        if not card_as_number:
-            if card in Deck.faceValues:
-                return Deck.faceValues[card]
-            else:
-                raise ValueError
-        else:
-            return card_as_number
-
     def Draw(self):
-        return False
-
-    def ThereAreValidPairs(self, player):
-        spits = getFirstElements(self.player1.spit_pile, self.player2.spit_pile)
-
-        player_cards = player.GetFrontCards(omit_empty_piles=True)
-
-        for card in player_cards:
-            for spit in spits:
-                if self.IsValidPair(card, spit):
-                    return True  # There is at least 1 pair
-
         return False
 
     def ChangePlayer(self):
@@ -179,7 +148,6 @@ class SpitGame(ConsoleInputOutputManipulator):
                     break
 
             while True:
-                if player.card_piles.
                 can_move, empty_indexes = player.CanMoveCardToEmptySpot()
                 if can_move:
                     player.MoveCardsToEmptySpots(empty_indexes)

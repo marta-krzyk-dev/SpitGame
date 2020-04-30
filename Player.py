@@ -3,6 +3,7 @@ from termcolor import colored
 from Project4_Split.helpers import getFirst, tryConvertToInt
 from Project4_Split.ConsoleInputOutputManipulator import ConsoleInputOutputManipulator
 from random import shuffle
+from Project4_Split.card_helpers import ThereAreValidPairs, IsValidPair
 
 
 class Player(ConsoleInputOutputManipulator):
@@ -67,23 +68,6 @@ class Player(ConsoleInputOutputManipulator):
         # print(f"Rearranged cards: {self.card_piles}")
         # print(f"SPIT: {self.spit_pile}")
 
-    '''
-    def ChooseCard2(self):
-
-        available_cards = self.GetFrontCards()
-
-        while True:
-            pile_card = input(colored(f"{self.name}, choose a card: ", self.color, attrs=["bold", "reverse"])).upper()
-
-            if self.IsCommand(pile_card):
-                self.Command(pile_card)
-                continue
-            else:
-                if pile_card in available_cards:
-                    return pile_card, available_cards.index(pile_card)
-                else:
-                    print(f"Invalid card. Try again.")
-    '''
     def ChooseCard(self, message=""):
 
         available_cards = self.GetFrontCards()
@@ -126,6 +110,9 @@ class Player(ConsoleInputOutputManipulator):
 
     def HasNoCards(self):
         return sum(len(pile) for pile in self.card_piles) == 0
+
+    def GetCardCount(self):
+        return sum(len(pile) for pile in self.card_piles)
 
     def GetFrontCards(self, omit_empty_piles=False, default_if_empty_pile=' '):
         if omit_empty_piles:
@@ -207,7 +194,13 @@ class Player(ConsoleInputOutputManipulator):
         del self.card_piles[pile_index][0]
         self.spit_pile.insert(0, card)
 
+    def CanMakeAMove(self, spit_cards):
+        return ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True)) or self.HasDuplicates() or self.CanMoveCardToEmptySpot()
+
     def CanMoveCardToEmptySpot(self):
+
+        if self.GetCardCount() <= self.pile_count:
+            return False, []
 
         empty_spot_indexes = []
         can_move = False

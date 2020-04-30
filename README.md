@@ -23,6 +23,8 @@ TESTS use commands when:
 - [x] User chooses a card to move to an empty spot
 - [x] User agrees to stack cards onto another 
 - [ ] Move AskForName to pLayer class?
+- [ ] Move ThereAreValidPairs to Player class
+- [ ] Move ConvertCardToNumericValue to Deck as static method
 
 TESTS:
 - [x] Create player with 15+ character name, check score table
