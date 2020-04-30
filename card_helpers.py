@@ -24,6 +24,7 @@ def ThereAreValidPairs(set1, set2):
     for card1 in set1:
         for card2 in set2:
             if IsValidPair(card1, card2):
+                print(f"Valid pair: {card1} {card2}")
                 return True  # There is at least 1 valid pair
 
     return False

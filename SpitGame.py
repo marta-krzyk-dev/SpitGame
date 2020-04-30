@@ -28,25 +28,24 @@ class SpitGame(ConsoleInputOutputManipulator):
             self.PrintGame()
 
             spit_cards = getFirstElements(self.current_player.spit_pile, self.other_player.spit_pile)
-            current_player_can_move = self.current_player.CanMakeAMove(spit_cards)
-            other_player_can_move = self.other_player.CanMakeAMove(spit_cards)
+            current_player_can_move = self.current_player.CanMakeAnyMove(spit_cards)
+            other_player_can_move = self.other_player.CanMakeAnyMove(spit_cards)
 
             if not current_player_can_move and other_player_can_move:
-                print(colored(f"{self.current_player.name}, you cannot move a card. You lose a round!",
-                              self.current_player.color, attrs=["bold", "reverse"]))
+                self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a round!")
                 continue
             elif not current_player_can_move and not other_player_can_move:
                 # Each player can place 1 card onto their spits
-                self.Print(
-                    f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards. Choose a card to be placed onto your respective spit pile.")
+                self.Print(f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards. Choose a card to be placed onto your respective spit pile.")
                 self.current_player.MoveAnyCardToSpitPile()
                 self.other_player.MoveAnyCardToSpitPile()
                 self.ChangePlayer()  # Stay with the same player for the next round
                 continue
 
-            self.RearrangeForPlayer(self.current_player)
+            self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and empty spots
 
-            self.MoveCards(self.current_player)
+            if self.current_player.HasValidPairs(spit_cards):
+                self.MoveCards(self.current_player)
 
             if self.current_player.HasNoCards():
                 spit1, spit2 = self.ChooseSpits(self.current_player)
@@ -92,9 +91,11 @@ class SpitGame(ConsoleInputOutputManipulator):
 
     def MoveCards(self, player):
 
+        if player.HasNoCards():
+            return
+
         while True:
             pile_card, pile_index = player.ChooseCard()
-            # print(f"{player.name} chose {pile_card} of value {ConvertCardToNumericValue(pile_card)}")
 
             isValidPair1 = IsValidPair(pile_card, self.player1.spit_pile[0])
             isValidPair2 = IsValidPair(pile_card, self.player2.spit_pile[0])
@@ -107,9 +108,9 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.player2.spit_pile.insert(0, pile_card)
                 break
 
-            elif not isValidPair1 and isValidPair2:
+            elif not isValidPair1 and not isValidPair2:
                 print(f"{pile_card} doesn't make a valid pair.")
-                break
+                continue
 
             else:  # isValidPair1 and isValidPair2:
                 self.player1.spit_pile.insert(0, pile_card)
@@ -138,7 +139,7 @@ class SpitGame(ConsoleInputOutputManipulator):
         else:
             print("Invalid pile. Try again.")
 
-    def RearrangeForPlayer(self, player):
+    def MoveCardsInPlayersPile(self, player):
         while True:
             while True:
                 if player.HasDuplicates():
@@ -148,9 +149,8 @@ class SpitGame(ConsoleInputOutputManipulator):
                     break
 
             while True:
-                can_move, empty_indexes = player.CanMoveCardToEmptySpot()
-                if can_move:
-                    player.MoveCardsToEmptySpots(empty_indexes)
+                if player.CanMoveCardToEmptySpot():
+                    player.MoveCardsToEmptySpots()
                     self.PrintGame()
                 else:
                     break

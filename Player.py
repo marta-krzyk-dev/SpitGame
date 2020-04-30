@@ -68,14 +68,16 @@ class Player(ConsoleInputOutputManipulator):
         # print(f"Rearranged cards: {self.card_piles}")
         # print(f"SPIT: {self.spit_pile}")
 
-    def ChooseCard(self, message=""):
+    def ChooseCard(self, message=None, skip_phrase=None):
 
         available_cards = self.GetFrontCards()
 
         while True:
-            pile_card = self.GetInput(colored(f"{self.name}, choose a card: " if message is "" else message, self.color, attrs=["bold", "reverse"])).upper()
+            pile_card = self.GetInput(colored(f"{self.name}, choose a card: " if message is None else message, self.color, attrs=["bold", "reverse"])).upper()
 
-            if self.IsCommand(pile_card) or pile_card.strip() == "":
+            if isinstance(skip_phrase, str) and pile_card.strip() is skip_phrase.upper():
+                return None, None
+            elif self.IsCommand(pile_card) or pile_card.strip() == "":
                 continue
 
             if pile_card in available_cards:
@@ -194,15 +196,18 @@ class Player(ConsoleInputOutputManipulator):
         del self.card_piles[pile_index][0]
         self.spit_pile.insert(0, card)
 
-    def CanMakeAMove(self, spit_cards):
+    def HasValidPairs(self, spit_cards):
+        return ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))
+
+    def CanMakeAnyMove(self, spit_cards):
+        print(f"There are valid pair for player {self.name} {ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))} has duplicates {self.HasDuplicates()}   can move cards to empty: {self.CanMoveCardToEmptySpot()}")
         return ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True)) or self.HasDuplicates() or self.CanMoveCardToEmptySpot()
 
     def CanMoveCardToEmptySpot(self):
 
         if self.GetCardCount() <= self.pile_count:
-            return False, []
+            return False
 
-        empty_spot_indexes = []
         can_move = False
         has_empty_pile = False
 
@@ -212,16 +217,31 @@ class Player(ConsoleInputOutputManipulator):
                can_move = True
            elif len(pile) == 0:
                has_empty_pile = True
-               empty_spot_indexes.append(index)
-
            index += 1
 
-        return (can_move and has_empty_pile), empty_spot_indexes
+        return can_move and has_empty_pile
 
-    def MoveCardsToEmptySpots(self, empty_indexes):
+    def GetEmptyIndexes(self):
+
+        if self.GetCardCount() <= self.pile_count:
+            return []
+
+        empty_spot_indexes = []
+        index = 0
+
+        for pile in self.card_piles:
+            if len(pile) == 0:
+                empty_spot_indexes.append(index)
+            index += 1
+
+        return empty_spot_indexes
+
+    def MoveCardsToEmptySpots(self):
+
+        empty_indexes = self.GetEmptyIndexes()
 
         for empty_index in empty_indexes:
-            card, move_index = self.ChooseCard(message=f"Choose card to move to the empty pile #{empty_index + 1}")
+            card, move_index = self.ChooseCard(message=f"Choose card to move to the empty pile #{empty_index + 1} or type n to skip", skip_phrase='n')
             self.MoveCard(move_index, empty_index)
 
     def MoveCard(self, from_pile_index, to_pile_index):

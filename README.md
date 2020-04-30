@@ -15,6 +15,7 @@ TO DOs:
 - [ ] Redraw game when resuming game
 - [ ] Fix recogninzning when both users cannot make a move
 - [ ] Ask player to stack duplicates only once (per duplicate)
+- [ ] Recognize draw
 
 TESTS use commands when:
 - [x] Game prompts for player's names
@@ -28,6 +29,9 @@ TESTS use commands when:
 
 TESTS:
 - [x] Create player with 15+ character name, check score table
+
+Special scenarios:
+- [ ] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
 
 Features:
 - [x] Player's name is shortened to 15 characters

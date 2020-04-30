@@ -20,7 +20,7 @@ class ConsoleInputOutputManipulator:
             return
         else:
             if color is None:
-                color= self.font_color
+                color = self.font_color
             print(colored(text, color, attrs=attributes))
 
     def PrintCentered(self, text, font_color=None, attributes=["bold"]):
