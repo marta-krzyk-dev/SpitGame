@@ -13,13 +13,22 @@ TO DOs:
 - [ ] Defect infinite loop when there are around 5 cards, some can be stacked onto 1 pile, then player is prompted to move card to an empty place
 - [ ] User can choose to move a stack a duplicated card with 'y' , 'n'
 - [ ] Redraw game when resuming game
+- [ ] Fix recogninzning when both users cannot make a move
+- [ ] Ask player to stack duplicates only once (per duplicate)
 
 TESTS use commands when:
 - [x] Game prompts for player's names
 - [ ] Both users cannot move and they add cards to their spit piles
-- [ ] User chooses a card
+- [x] User chooses a card
 - [x] User chooses a card to move to an empty spot
 - [x] User agrees to stack cards onto another 
+- [ ] Move AskForName to pLayer class?
+
+TESTS:
+- [x] Create player with 15+ character name, check score table
+
+Features:
+- [x] Player's name is shortened to 15 characters
 
 Gameplay:
 - [ ] Player can choose the card to be added to spit pile

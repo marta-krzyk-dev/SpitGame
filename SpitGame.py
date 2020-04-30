@@ -27,9 +27,9 @@ class SpitGame(ConsoleInputOutputManipulator):
             self.PrintGame()
 
             current_player_can_move = self.ThereAreValidPairs(
-                self.current_player) or self.current_player.HasDuplicates() or self.current_player.CanMoveCardToEmptySpot()
+                self.current_player) # or self.current_player.HasDuplicates() or self.current_player.CanMoveCardToEmptySpot()
             other_player_can_move = self.ThereAreValidPairs(
-                self.other_player) or self.other_player.HasDuplicates() or self.other_player.CanMoveCardToEmptySpot()
+                self.other_player) #or self.other_player.HasDuplicates() or self.other_player.CanMoveCardToEmptySpot()
 
             if not current_player_can_move and other_player_can_move:
                 print(colored(f"{self.current_player.name}, you cannot move a card. You lose a round!",
@@ -60,9 +60,14 @@ class SpitGame(ConsoleInputOutputManipulator):
     def ChooseSpits(self, player):
         return player.spit_pile, player.spit_pile
 
-    def CreatePlayers(self):
-        name1 = "Dolphin"  # self.AskForName("Player 1") #  # AskForName("Player 1")
-        name2 = "Parrot"  # self.AskForName("Player 2", [name1])  # AskForName("Player 2")
+    def CreatePlayers(self, use_defaults=False):
+
+        if use_defaults:
+            name1 = "Dolphin"
+            name2 = "Parrot"
+        else:
+            name1 = self.AskForName("Player 1")
+            name2 = self.AskForName("Player 2", [name1])
 
         deck = Deck()
         half1, half2 = deck.getHalves()
@@ -72,7 +77,7 @@ class SpitGame(ConsoleInputOutputManipulator):
 
         self.current_player == self.player1
 
-    def AskForName(self, playerName, existing_names=[]):
+    def AskForName(self, playerName, existing_names=[], max_len=15):
         while True:
             name = self.GetInput(f"{playerName}, enter your name >>").strip()
 
@@ -83,7 +88,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                 if name in existing_names:
                     self.Print("Player with that name already exists.")
                 else:
-                    return name
+                    return name[:int(max_len)]
 
     def MoveCards(self, player):
 
@@ -174,6 +179,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                     break
 
             while True:
+                if player.card_piles.
                 can_move, empty_indexes = player.CanMoveCardToEmptySpot()
                 if can_move:
                     player.MoveCardsToEmptySpots(empty_indexes)
@@ -195,13 +201,13 @@ class SpitGame(ConsoleInputOutputManipulator):
 
     def PrintScores(self):
 
-        max_name_len = 15  # max(len(self.player1.name), len(self.player2.name), len("PLAYER"))
+        max_name_len = 15
         score_len = 5
         result_len = 7
 
         result1, result2 = self.GetScoreResults(self.player1.score, self.player2.score)
-        row1 = f"{self.player1.name.ljust(max_name_len)} ║ {str(self.player1.score).center(score_len)} ║ {result1.ljust(result_len)}"
-        row2 = f"{self.player2.name.ljust(max_name_len)} ║ {str(self.player2.score).center(score_len)} ║ {result2.ljust(result_len)}"
+        row1 = f"{self.player1.name[:max_name_len].ljust(max_name_len)} ║ {str(self.player1.score).center(score_len)} ║ {result1.ljust(result_len)}"
+        row2 = f"{self.player2.name[:max_name_len].ljust(max_name_len)} ║ {str(self.player2.score).center(score_len)} ║ {result2.ljust(result_len)}"
 
         self.Print("╔═" + "═" * max_name_len + "═╦═" + ("═" * score_len) + "═╦═" + ("═" * result_len) + "═╗")
         self.Print(f"║ {'PLAYER'.center(max_name_len)} ║ SCORE ║ {'RESULT'.ljust(result_len)} ║")
