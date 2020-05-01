@@ -25,7 +25,10 @@ class SpitGame(ConsoleInputOutputManipulator):
         while True:
 
             self.ChangePlayer()
+            self.current_player.AdjustCardsForTesting()
+
             self.PrintGame()
+
 
             spit_cards = getFirstElements(self.current_player.spit_pile, self.other_player.spit_pile)
             current_player_can_move = self.current_player.CanMakeAnyMove(spit_cards)
@@ -140,13 +143,13 @@ class SpitGame(ConsoleInputOutputManipulator):
             print("Invalid pile. Try again.")
 
     def MoveCardsInPlayersPile(self, player):
+
+        duplicates = player.GetDuplicateIndexes()
+        print(f'Here are duplicates: {duplicates}')
         while True:
-            while True:
-                if player.HasDuplicates():
-                    player.MoveFirstDuplicateToLeft()
-                    self.PrintGame()
-                else:
-                    break
+            if len(duplicates) > 0:
+                player.MoveDuplicatesToLeft(duplicates)
+                self.PrintGame()
 
             while True:
                 if player.CanMoveCardToEmptySpot():
@@ -155,7 +158,13 @@ class SpitGame(ConsoleInputOutputManipulator):
                 else:
                     break
 
-            if not player.HasDuplicates():
+            # Check again for duplicates after moving cards to empty spots
+            new_duplicates = [i for i in player.GetDuplicateIndexes() if i not in duplicates]
+            if len(new_duplicates) > 0:
+                duplicates = new_duplicates
+                #TODO remove log
+                print(f'There are new duplicates: {duplicates}')
+            else:
                 return
 
     # PRINT METHODS

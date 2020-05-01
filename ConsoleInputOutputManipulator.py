@@ -58,6 +58,28 @@ class ConsoleInputOutputManipulator:
         input = input.replace(" ", "").lower()
         return input == "--help" or input == "--resume"
 
+    def GetInputWithAllowedAnswers(self, message="", allowed_answers=[], inside_command=False):
+
+        allowed_answers = [str(x).lower() for x in allowed_answers]
+        print(f"allowed answers: {allowed_answers}")
+
+        while True:
+            answer = input(colored(message, self.font_color, attrs=["bold", "reverse"]))  # Remove whitespaces
+            formatted_answer = answer.replace(" ", "").lower()
+
+            if formatted_answer in allowed_answers:
+                return answer
+            elif formatted_answer == "--help":
+                self.PrintInstructions()
+                self.GetInput("Use --resume to go back to the game", inside_command=True)
+            elif formatted_answer == "--resume":
+                return answer
+            elif formatted_answer.startswith("--") or inside_command:
+                print("Available commands:")
+                print("--help       Print instructions")
+                print("--resume     Resume the game")
+                self.GetInput(inside_command=inside_command)
+
     def GetInput(self, message="", inside_command= False):
         answer = input(colored(message, self.font_color, attrs=["bold", "reverse"]))  # Remove whitespaces
         formatted_answer = answer.replace(" ", "").lower()

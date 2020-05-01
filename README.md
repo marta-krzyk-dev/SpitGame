@@ -2,20 +2,21 @@
 Split card console game in Python
 
 TO DOs:
-- [ ] command --help print the game's instructions (at any point of the game)
+- [x] command --help print the game's instructions (at any point of the game)
 - [x] command -- resume resumes the game
 - [ ] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [ ] 2 players can connect via internal network, python-request library, Flask
 - [ ] implement Spit's logic
 - [ ] show winner at the end (scores)
-- [ ] Save score between rounds
+- [x] Save score between rounds
 - [x] print graphical cards onto screen
 - [ ] Defect infinite loop when there are around 5 cards, some can be stacked onto 1 pile, then player is prompted to move card to an empty place
-- [ ] User can choose to move a stack a duplicated card with 'y' , 'n'
+- [x] User can choose to move a stack a duplicated card with 'y' , 'n'
 - [ ] Redraw game when resuming game
-- [ ] Fix recogninzning when both users cannot make a move
-- [ ] Ask player to stack duplicates only once (per duplicate)
+- [ ] Fix recognizing when both users cannot make a move
+- [x] Ask player to stack duplicates only once (per duplicate)
 - [ ] Recognize draw
+- [x] Don't ask to stack up the same duplicates more than once
 
 TESTS use commands when:
 - [x] Game prompts for player's names
@@ -23,15 +24,17 @@ TESTS use commands when:
 - [x] User chooses a card
 - [x] User chooses a card to move to an empty spot
 - [x] User agrees to stack cards onto another 
+
+TODOs
 - [ ] Move AskForName to pLayer class?
-- [ ] Move ThereAreValidPairs to Player class
-- [ ] Move ConvertCardToNumericValue to Deck as static method
+- [ ] Merge method GetInputWithAllowedAnswers into GetInput
+- [ ] Use ConvertCardToNumericValue in Player
 
 TESTS:
 - [x] Create player with 15+ character name, check score table
 
 Special scenarios:
-- [ ] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
+- [x] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
 
 Features:
 - [x] Player's name is shortened to 15 characters

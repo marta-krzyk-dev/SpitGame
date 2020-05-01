@@ -3,7 +3,7 @@ from termcolor import colored
 from Project4_Split.helpers import getFirst, tryConvertToInt
 from Project4_Split.ConsoleInputOutputManipulator import ConsoleInputOutputManipulator
 from random import shuffle
-from Project4_Split.card_helpers import ThereAreValidPairs, IsValidPair
+from Project4_Split.card_helpers import ThereAreValidPairs, ConvertCardToNumericValue
 
 
 class Player(ConsoleInputOutputManipulator):
@@ -23,7 +23,8 @@ class Player(ConsoleInputOutputManipulator):
     def AddToScore(self):
         self.score += 1
 
-    def PrintCardsX(self):
+    # TODO remove
+    def PrintCardsAsArray(self):
         for pile in self.card_piles:
             print(pile)
 
@@ -45,7 +46,7 @@ class Player(ConsoleInputOutputManipulator):
         begin = 0
         card_count = len(new_cards)
 
-        # Arrange cardss into piles, like so:
+        # Arrange cards into piles, like so:
         '''
         1
         2 6
@@ -65,17 +66,16 @@ class Player(ConsoleInputOutputManipulator):
         # Put the rest of the cards into spit pile
         self.spit_pile = new_cards
 
-        # print(f"Rearranged cards: {self.card_piles}")
-        # print(f"SPIT: {self.spit_pile}")
-
     def ChooseCard(self, message=None, skip_phrase=None):
 
         available_cards = self.GetFrontCards()
 
         while True:
-            pile_card = self.GetInput(colored(f"{self.name}, choose a card: " if message is None else message, self.color, attrs=["bold", "reverse"])).upper()
+            pile_card = self.GetInput(
+                colored(f"{self.name}, choose a card: " if message is None else message, self.color,
+                        attrs=["bold", "reverse"])).upper()
 
-            if isinstance(skip_phrase, str) and pile_card.strip() is skip_phrase.upper():
+            if isinstance(skip_phrase, str) and pile_card.strip().upper() is skip_phrase.upper():
                 return None, None
             elif self.IsCommand(pile_card) or pile_card.strip() == "":
                 continue
@@ -85,7 +85,7 @@ class Player(ConsoleInputOutputManipulator):
             else:
                 print(f"Invalid card. Try again.")
 
-    def PrintCards(self, print_name_above_cards= True):
+    def PrintCards(self, print_name_above_cards=True):
 
         row1 = ""
         row2 = ""
@@ -129,7 +129,8 @@ class Player(ConsoleInputOutputManipulator):
     def GetCard(self):
 
         while True:
-            card = self.ConvertCardToNumber(self.GetInput(colored(f"{self.name}, choose card: ", self.color, attrs=["bold", "reverse"])))
+            card = self.ConvertCardToNumber(
+                self.GetInput(colored(f"{self.name}, choose card: ", self.color, attrs=["bold", "reverse"])))
 
             available_cards = [getFirst(i) for i in self.card_piles]
             print(available_cards)
@@ -164,32 +165,39 @@ class Player(ConsoleInputOutputManipulator):
 
         return len(front_cards) != len(unique_front_cards)
 
-    def MoveFirstDuplicateToLeft(self):
+    def GetDuplicateIndexes(self):
         front_cards = self.GetFrontCards(omit_empty_piles=True)
+        duplicate_indexes = []
 
-        index: int = 0
-        max = len(front_cards) - 1
+        # TODO Reformat loop into comprehension list
+        for c in front_cards:
+            indexes = [i for i in range(len(front_cards)) if front_cards[i] == c]
+            print(f"indexes for {c} : {indexes}")
+            if len(indexes) > 1 and indexes not in duplicate_indexes:
+                duplicate_indexes.append(indexes)
 
-        while index < max:
-            card = front_cards[index]
-            #print(f"Looking for {card} {type(card)} in {front_cards[(index + 1):]}")
-            if card in front_cards[(index + 1):]:
-                second_index = front_cards[index + 1:].index(card) + index + 1
-                #print(f"Found duplicate {card} at {second_index}")
+        return duplicate_indexes
 
+    def MoveDuplicatesToLeft(self, duplicate_indexes):
+
+        front_cards = self.GetFrontCards(omit_empty_piles=False)
+
+        for indexes in duplicate_indexes:
+            card = front_cards[indexes[0]]
+            left_most_index = indexes[0]
+
+            for duplicate_index in indexes[1:]:
                 while True:
-                    answer = self.GetInput(f"{self.name}, do you want to stack duplicate card {card} from #{second_index + 1} to #{index + 1} pile? (y/n)").strip()
+                    answer = self.GetInputWithAllowedAnswers(
+                        f"{self.name}, do you want to stack duplicate card {card} from #{duplicate_index + 1} to #{left_most_index + 1} pile? (y/n)", allowed_answers=['y', 'n']).strip()
                     if self.IsCommand(answer) or len(answer) == 0:
                         continue
                     elif answer.startswith('y') or answer.startswith('n'):
                         break
 
                 if answer.startswith('y'):
-                    del self.card_piles[second_index][0]
-                    self.card_piles[index].insert(0, card)
-                break
-
-            index += 1
+                    del self.card_piles[duplicate_index][0]
+                    self.card_piles[left_most_index].insert(0, card)
 
     def MoveAnyCardToSpitPile(self):
         card, pile_index = self.ChooseCard()
@@ -200,8 +208,10 @@ class Player(ConsoleInputOutputManipulator):
         return ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))
 
     def CanMakeAnyMove(self, spit_cards):
-        print(f"There are valid pair for player {self.name} {ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))} has duplicates {self.HasDuplicates()}   can move cards to empty: {self.CanMoveCardToEmptySpot()}")
-        return ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True)) or self.HasDuplicates() or self.CanMoveCardToEmptySpot()
+        print(
+            f"There are valid pair for player {self.name} {ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))} has duplicates {self.HasDuplicates()}   can move cards to empty: {self.CanMoveCardToEmptySpot()}")
+        return ThereAreValidPairs(spit_cards, self.GetFrontCards(
+            omit_empty_piles=True)) or self.HasDuplicates() or self.CanMoveCardToEmptySpot()
 
     def CanMoveCardToEmptySpot(self):
 
@@ -213,11 +223,11 @@ class Player(ConsoleInputOutputManipulator):
 
         index = 0
         for pile in self.card_piles:
-           if len(pile) > 1:
-               can_move = True
-           elif len(pile) == 0:
-               has_empty_pile = True
-           index += 1
+            if len(pile) > 1:
+                can_move = True
+            elif len(pile) == 0:
+                has_empty_pile = True
+            index += 1
 
         return can_move and has_empty_pile
 
@@ -241,7 +251,8 @@ class Player(ConsoleInputOutputManipulator):
         empty_indexes = self.GetEmptyIndexes()
 
         for empty_index in empty_indexes:
-            card, move_index = self.ChooseCard(message=f"Choose card to move to the empty pile #{empty_index + 1} or type n to skip", skip_phrase='n')
+            card, move_index = self.ChooseCard(
+                message=f"Choose card to move to the empty pile #{empty_index + 1} or type n to skip", skip_phrase='n')
             self.MoveCard(move_index, empty_index)
 
     def MoveCard(self, from_pile_index, to_pile_index):
@@ -251,3 +262,11 @@ class Player(ConsoleInputOutputManipulator):
             self.card_piles[to_pile_index].insert(0, temp)
         except IndexError:
             pass
+
+    def AdjustCardsForTesting(self):
+        self.card_piles[0] = ['2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2']
+        self.card_piles[1] = ['9']
+        self.card_piles[2] = ['9']
+        self.card_piles[3] = ['Q']
+        self.card_piles[4] = ['K']
+        self.spit_pile = ['2', '2']
