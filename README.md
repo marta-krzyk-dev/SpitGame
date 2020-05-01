@@ -6,7 +6,7 @@ TO DOs:
 - [x] command -- resume resumes the game
 - [ ] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [ ] 2 players can connect via internal network, python-request library, Flask
-- [ ] implement Spit's logic
+- [x] implement Spit's logic
 - [ ] show winner at the end (scores)
 - [x] Save score between rounds
 - [x] print graphical cards onto screen
@@ -32,6 +32,8 @@ TODOs
 
 TESTS:
 - [x] Create player with 15+ character name, check score table
+- [ ] Play 2 full rounds
+- [ ] Have both players outta moves
 
 Special scenarios:
 - [x] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot

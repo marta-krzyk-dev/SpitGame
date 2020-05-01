@@ -117,19 +117,22 @@ class Player(ConsoleInputOutputManipulator):
         return sum(len(pile) for pile in self.card_piles)
 
     def GetFrontCards(self, omit_empty_piles=False, default_if_empty_pile=' '):
+        #TODO use list comprehension
         if omit_empty_piles:
+            return [pile[0] for pile in self.card_piles if len(pile) > 0]
+            '''
             result = []
             for pile in self.card_piles:
                 if len(pile) > 0:
                     result.append(pile[0])
-            return result
+            return result'''
         else:
             return [getFirst(i, default_if_empty_pile) for i in self.card_piles]
 
     def GetCard(self):
 
         while True:
-            card = self.ConvertCardToNumber(
+            card = ConvertCardToNumericValue(
                 self.GetInput(colored(f"{self.name}, choose card: ", self.color, attrs=["bold", "reverse"])))
 
             available_cards = [getFirst(i) for i in self.card_piles]
@@ -137,28 +140,13 @@ class Player(ConsoleInputOutputManipulator):
 
             if card in available_cards:
                 pile_index = available_cards.index(card)
-                print(f"{self.name} chose {card} - value: {self.ConvertCardToNumber(card)} from pile {pile_index + 1}")
+                print(f"{self.name} chose {card} - value: {ConvertCardToNumericValue(card)} from pile {pile_index + 1}")
                 del self.card_piles[pile_index][0]  # REDRAW?
                 return card
             else:
                 print("Invalid card. Try again.")
 
-    def ConvertCardToNumber(self, card):
-
-        if not (isinstance(card, str) or not isinstance(card, int)):
-            raise TypeError
-
-        card_value = tryConvertToInt(card)
-
-        if not card_value:
-            if card_value in self.faceValues:
-                return self.faceValues[card_value]
-            else:
-                print(f"Type : {type(card_value)} Value: {card_value}")
-                raise ValueError
-        else:
-            return card_value
-
+    # region Duplicates
     def HasDuplicates(self):
         front_cards = self.GetFrontCards(omit_empty_piles=True)
         unique_front_cards = set(front_cards)
@@ -172,7 +160,6 @@ class Player(ConsoleInputOutputManipulator):
         # TODO Reformat loop into comprehension list
         for c in front_cards:
             indexes = [i for i in range(len(front_cards)) if front_cards[i] == c]
-            print(f"indexes for {c} : {indexes}")
             if len(indexes) > 1 and indexes not in duplicate_indexes:
                 duplicate_indexes.append(indexes)
 
@@ -189,7 +176,8 @@ class Player(ConsoleInputOutputManipulator):
             for duplicate_index in indexes[1:]:
                 while True:
                     answer = self.GetInputWithAllowedAnswers(
-                        f"{self.name}, do you want to stack duplicate card {card} from #{duplicate_index + 1} to #{left_most_index + 1} pile? (y/n)", allowed_answers=['y', 'n']).strip()
+                        f"{self.name}, do you want to stack duplicate card {card} from #{duplicate_index + 1} to #{left_most_index + 1} pile? (y/n)",
+                        allowed_answers=['y', 'n']).strip()
                     if self.IsCommand(answer) or len(answer) == 0:
                         continue
                     elif answer.startswith('y') or answer.startswith('n'):
@@ -198,6 +186,7 @@ class Player(ConsoleInputOutputManipulator):
                 if answer.startswith('y'):
                     del self.card_piles[duplicate_index][0]
                     self.card_piles[left_most_index].insert(0, card)
+    # endregion
 
     def MoveAnyCardToSpitPile(self):
         card, pile_index = self.ChooseCard()
