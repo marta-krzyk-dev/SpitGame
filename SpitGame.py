@@ -14,20 +14,16 @@ class SpitGame(ConsoleInputOutputManipulator):
         self.pile_count = pile_count
         self.current_player = None
         self.other_player = None
-        self.round_number = 1
+        self.round_number = 0
     # endregion
 
     def PlayRound(self):
-
+        self.round_number += 1
         self.PrintRound()
         self.PrintScores()
-        self.round_number += 1
 
         while True:
-
             self.ChangePlayer()
-            #self.current_player.AdjustCardsForTesting()
-
             self.PrintGame()
 
             spit_cards = getFirstElements(self.current_player.spit_pile, self.other_player.spit_pile)
@@ -38,34 +34,24 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a turn!")
                 continue
             elif not current_player_can_move and not other_player_can_move:
-                # Each player can place 1 card onto their spits
-                self.Print(f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards. Choose a card to be placed onto your respective spit pile.")
-                self.current_player.MoveAnyCardToSpitPile()
-                self.other_player.MoveAnyCardToSpitPile()
-                self.ChangePlayer()  # Stay with the same player for the next round
-                continue
+                self.Draw()
+                return
 
             self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and fill empty spots
 
             if self.current_player.HasValidPairs(spit_cards):
-                self.MoveCards(self.current_player)
+                self.AddCardToSpitPile(self.current_player)
             else:
                 self.current_player.PrintReverse(
                     f"{self.current_player.name}, you don't have a valid pair to add to any spit pile. End of turn for you!")
 
-            if self.current_player.HasNoCards():
-                spit1, spit2 = self.ChooseSpits(self.current_player)
-                self.current_player.ShuffleCards(spit1)
-                self.other_player.ShuffleCards(spit2)
-                self.current_player.Print(f"{self.current_player.name}, spit pile with {len(spit1)} cards {spit1} was added to your cards.")
-                self.other_player.Print(f"{self.other_player.name}, spit pile with {len(spit2)} cards {spit2} was added to your cards.")
+            if self.current_player.HasNoCardsInPiles():
                 print(f"{self.current_player.name} WON ROUND {self.round_number}!")
-                break
-            elif self.Draw():
-                print(f"DRAW!")
+                self.current_player.AddToScore()
+                return # End the round
 
     def ChooseSpits(self, choosing_player):
-        answer = self.GetInputWithAllowedAnswers(f"{choosing_player.name}, choose spit pile to add to your cards (type 1 or 2):", ['1', '2'])
+        answer = self.GetInputWithAllowedAnswers(f"{choosing_player.name}, choose spit pile 1 ({len(self.player1.spit_pile)} cards) or spit pile 2 ({len(self.player2.spit_pile)} cards) to add to your cards (type 1 or 2):", ['1', '2'])
 
         if answer == '1':
             return self.player1.spit_pile, self.player2.spit_pile
@@ -75,11 +61,11 @@ class SpitGame(ConsoleInputOutputManipulator):
     def CreatePlayers(self, ask_for_names=True):
 
         if ask_for_names:
-            name1 = "Dolphin"
-            name2 = "Parrot"
-        else:
             name1 = self.AskForName("Player 1")
             name2 = self.AskForName("Player 2", [name1])
+        else:
+            name1 = "Dolphin"
+            name2 = "Parrot"
 
         deck = Deck()
         half1, half2 = deck.getHalves()
@@ -102,16 +88,16 @@ class SpitGame(ConsoleInputOutputManipulator):
                 else:
                     return name[:int(max_len)]
 
-    def MoveCards(self, player):
+    def AddCardToSpitPile(self, player):
 
-        if player.HasNoCards():
+        if player.HasNoCardsInPiles():
             return
 
         while True:
             pile_card, pile_index = player.ChooseCard()
 
-            isValidPair1 = IsValidPair(pile_card, self.player1.spit_pile[0])
-            isValidPair2 = IsValidPair(pile_card, self.player2.spit_pile[0])
+            isValidPair1 = IsValidPair(pile_card, self.player1.spit_pile[0]) if len(self.player1.spit_pile) > 0 else False
+            isValidPair2 = IsValidPair(pile_card, self.player2.spit_pile[0]) if len(self.player2.spit_pile) > 0 else False
 
             if isValidPair1 and not isValidPair2:
                 self.player1.spit_pile.insert(0, pile_card)
@@ -133,7 +119,15 @@ class SpitGame(ConsoleInputOutputManipulator):
         del player.card_piles[pile_index][0]
 
     def Draw(self):
-        return False
+        self.Print(
+            f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards, this is end of round {self.round_number}.")
+        spit1, spit2 = self.ChooseSpits(choosing_player=self.current_player)
+        self.current_player.ShuffleCards(spit1)
+        self.other_player.ShuffleCards(spit2)
+        self.current_player.Print(
+            f"{self.current_player.name}, spit pile with {len(spit1)} cards {spit1} was added to your cards.")
+        self.other_player.Print(
+            f"{self.other_player.name}, spit pile with {len(spit2)} cards {spit2} was added to your cards.")
 
     def ChangePlayer(self):
         if self.current_player == self.player1:
@@ -169,6 +163,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                     break
 
             # Check again for duplicates after moving cards to empty spots
+            print(f'{duplicates}')
             new_duplicates = [i for i in player.GetDuplicateIndexes() if i not in duplicates]
             if len(new_duplicates) > 0:
                 duplicates = new_duplicates

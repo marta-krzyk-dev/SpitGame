@@ -18,6 +18,7 @@ TO DOs:
 - [x] Ask player to stack duplicates only once (per duplicate)
 - [ ] Recognize draw
 - [x] Don't ask to stack up the same duplicates more than once
+- [ ] Move AddCardToSpitPile , MoveCardsInPlayersPile to Player class
 
 TESTS use commands when:
 - [x] Game prompts for player's names
@@ -31,6 +32,7 @@ TODOs
 - [ ] Merge method GetInputWithAllowedAnswers into GetInput
 - [ ] Use ConvertCardToNumericValue in Player
 - [ ] Uniform print cards methods (remove some if possible)
+- [ ] Show number of cards in piles
 
 TESTS:
 - [x] Create player with 15+ character name, check score table

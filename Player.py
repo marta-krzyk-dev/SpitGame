@@ -56,15 +56,17 @@ class Player(ConsoleInputOutputManipulator):
         4 8 11 13
         5 9 12 14 15 
         '''
-        for y in range(self.pile_count):
-            for x in range(begin, self.pile_count):
-                self.card_piles[x].append(cards[0])
-                del cards[0]
-                card_count -= 1
-                if card_count == 0:
-                    break
-            begin += 1
-
+        try:
+            for y in range(self.pile_count):
+                for x in range(begin, self.pile_count):
+                    self.card_piles[x].append(cards[0])
+                    del cards[0]
+                    card_count -= 1
+                    if card_count == 0:
+                        break
+                begin += 1
+        except IndexError:
+            pass
         # Put the rest of the cards into spit pile
         self.spit_pile = cards
 
@@ -88,9 +90,12 @@ class Player(ConsoleInputOutputManipulator):
                 print(f"Invalid card. Try again.")
 
     def HasNoCards(self):
+        return len(self.spit_pile) == 0 and self.HasNoCardsInPiles()
+
+    def HasNoCardsInPiles(self):
         return sum(len(pile) for pile in self.card_piles) == 0
 
-    def GetCardCount(self):
+    def GetPileCardCount(self):
         return sum(len(pile) for pile in self.card_piles)
 
     def GetFrontCards(self, omit_empty_piles=False, default_if_empty_pile=' '):
@@ -140,6 +145,7 @@ class Player(ConsoleInputOutputManipulator):
             if len(indexes) > 1 and indexes not in duplicate_indexes:
                 duplicate_indexes.append(indexes)
 
+        print(f'GetDipulcateIndexes retrining {duplicate_indexes}')
         return duplicate_indexes
 
     def MoveDuplicatesToLeft(self, duplicate_indexes):
@@ -179,7 +185,7 @@ class Player(ConsoleInputOutputManipulator):
     # region Empty spot logic
     def CanMoveCardToEmptySpot(self):
 
-        if self.GetCardCount() <= self.pile_count:
+        if self.GetPileCardCount() <= self.pile_count:
             return False
 
         can_move = False
@@ -197,7 +203,7 @@ class Player(ConsoleInputOutputManipulator):
 
     def GetEmptyIndexes(self):
 
-        if self.GetCardCount() <= self.pile_count:
+        if self.GetPileCardCount() <= self.pile_count:
             return []
 
         empty_spot_indexes = []
@@ -262,3 +268,12 @@ class Player(ConsoleInputOutputManipulator):
         self.card_piles[3] = ['Q']
         self.card_piles[4] = ['K']
         self.spit_pile = ['2', '2']
+
+
+    def AdjustCardsForTesting2(self):
+        self.card_piles[0] = ['4']
+        self.card_piles[1] = ['2']
+        self.card_piles[2] = ['4']
+        self.card_piles[3] = ['2']
+        self.card_piles[4] = ['4']
+        self.spit_pile = ['K', '2']

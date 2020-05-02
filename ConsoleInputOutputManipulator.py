@@ -62,7 +62,6 @@ class ConsoleInputOutputManipulator:
     def GetInputWithAllowedAnswers(self, message="", allowed_answers=[], inside_command=False):
 
         allowed_answers = [str(x).lower() for x in allowed_answers]
-        print(f"allowed answers: {allowed_answers}")
 
         while True:
             answer = input(colored(message, self.font_color, attrs=["bold", "reverse"]))  # Remove whitespaces
