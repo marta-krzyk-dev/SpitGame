@@ -4,7 +4,7 @@ Split card console game in Python
 TO DOs:
 - [x] command --help print the game's instructions (at any point of the game)
 - [x] command -- resume resumes the game
-- [ ] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
+- [x] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [ ] 2 players can connect via internal network, python-request library, Flask
 - [ ] spits are part of SpitGame class, not players?
 - [x] implement Spit's logic

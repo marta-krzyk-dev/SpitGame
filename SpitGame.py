@@ -35,7 +35,7 @@ class SpitGame(ConsoleInputOutputManipulator):
             other_player_can_move = self.other_player.CanMakeAnyMove(spit_cards)
 
             if not current_player_can_move and other_player_can_move:
-                self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a round!")
+                self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a turn!")
                 continue
             elif not current_player_can_move and not other_player_can_move:
                 # Each player can place 1 card onto their spits
@@ -49,6 +49,9 @@ class SpitGame(ConsoleInputOutputManipulator):
 
             if self.current_player.HasValidPairs(spit_cards):
                 self.MoveCards(self.current_player)
+            else:
+                self.current_player.PrintReverse(
+                    f"{self.current_player.name}, you don't have a valid pair to add to any spit pile. End of turn for you!")
 
             if self.current_player.HasNoCards():
                 spit1, spit2 = self.ChooseSpits(self.current_player)
@@ -69,9 +72,9 @@ class SpitGame(ConsoleInputOutputManipulator):
         else:
             return self.player2.spit_pile, self.player1.spit_pile
 
-    def CreatePlayers(self, use_defaults=False):
+    def CreatePlayers(self, ask_for_names=True):
 
-        if use_defaults:
+        if ask_for_names:
             name1 = "Dolphin"
             name2 = "Parrot"
         else:
