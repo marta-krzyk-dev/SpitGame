@@ -1,26 +1,21 @@
 # SplitGame
 Split card console game in Python
 
-TO DOs:
+Features:
+- [x] Player's name is shortened to 15 characters
 - [x] command --help print the game's instructions (at any point of the game)
 - [x] command -- resume resumes the game
 - [x] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [ ] 2 players can connect via internal network, python-request library, Flask
-- [ ] spits are part of SpitGame class, not players?
-- [x] implement Spit's logic
-- [ ] show winner at the end (scores)
 - [x] Save score between rounds
 - [x] print graphical cards onto screen
 - [ ] Defect infinite loop when there are around 5 cards, some can be stacked onto 1 pile, then player is prompted to move card to an empty place
 - [x] User can choose to move a stack a duplicated card with 'y' , 'n'
 - [ ] Redraw game when resuming game
-- [ ] Fix recognizing when both users cannot make a move
 - [x] Ask player to stack duplicates only once (per duplicate)
 - [ ] Recognize draw
-- [x] Don't ask to stack up the same duplicates more than once
 - [ ] Move AddCardToSpitPile , MoveCardsInPlayersPile to Player class
-- [ ] Recognize end of the game!
-- [ ] rearrange cards after a player won!
+
 TESTS use commands when:
 - [x] Game prompts for player's names
 - [ ] Both users cannot move and they add cards to their spit piles
@@ -28,21 +23,18 @@ TESTS use commands when:
 - [x] User chooses a card to move to an empty spot
 - [x] User agrees to stack cards onto another 
 
-TODOs
-- [ ] Move AskForName to pLayer class?
-- [ ] Merge method GetInputWithAllowedAnswers into GetInput
-- [ ] Uniform print cards methods (remove some if possible)
-
 TESTS:
 - [x] Create player with 15+ character name, check score table
 - [ ] Play 2 full rounds
 - [ ] Have both players outta moves
 
+TODOs
+- [ ] Move AskForName to pLayer class?
+- [ ] Merge method GetInputWithAllowedAnswers into GetInput
+- [ ] Uniform print cards methods (remove some if possible)
+
 Special scenarios:
 - [x] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
-
-Features:
-- [x] Player's name is shortened to 15 characters
 
 Gameplay:
 - [ ] Player can choose the card to be added to spit pile

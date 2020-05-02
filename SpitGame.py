@@ -21,6 +21,7 @@ class SpitGame(ConsoleInputOutputManipulator):
     def PlayGame(self):
 
         self.round_number = 0
+        end = False
 
         while end is False:
             end = self.PlayRound()
@@ -88,6 +89,7 @@ class SpitGame(ConsoleInputOutputManipulator):
             f"{self.other_player.name}, spit pile with {len(spit2)} cards was added to your cards and reshuffled.")
     # endregion
 
+    # region Helper methods
     def ChooseSpits(self, choosing_player):
         answer = self.GetInputWithAllowedAnswers(f"{choosing_player.name}, choose spit pile 1 ({len(self.player1.spit_pile)} cards) or spit pile 2 ({len(self.player2.spit_pile)} cards) to add to your cards (type 1 or 2):", ['1', '2'])
 
@@ -163,15 +165,6 @@ class SpitGame(ConsoleInputOutputManipulator):
             self.current_player = self.player1
             self.other_player = self.player2
 
-    def ChooseSpit(self, player):
-        split_pile_number = tryConvertToInt(input(f"{player.name}, choose spit pile to add your cards (1 or 2): "))
-        if split_pile_number == 1:
-            return self.player1.spit_pile, self.player2.spit_pile
-        elif split_pile_number == 2:
-            return self.player2.spit_pile, self.player1.spit_pile
-        else:
-            print("Invalid pile. Try again.")
-
     def MoveCardsInPlayersPile(self, player):
 
         duplicates = player.GetDuplicateIndexes()
@@ -195,6 +188,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                 duplicates = new_duplicates
             else:
                 return
+    # endregion
 
     # region Print methods
     def PrintTitle(self):
