@@ -4,7 +4,7 @@ def getInstructions():
         'Objective': 'The objective of the game is to be the first player to get rid of all his/her cards.',
         'Game Play': "The game begins with each player playing the top card of his/her spit pile face up into the middle. Players then can move cards from the five piles in front of them in three ways.\
 \
-\n(1) Move cards into the middle with one rank higher or one rank lower than the card showing in the middle. Note that the ace will link the 2s and kings together.\
+\n(1) Move cards into the middle with the same rank or one rank higher or lower than the card showing in the middle. Note that the ace will link the 2s and kings together.\
 \n(2) If one of the player's five piles is gone, a player can move a card to the empty space.\
 \n(3) Cards with the same rank can be stacked on top of each other within the five piles. For example, a 5 can be played on another 5 within a player’s piles.\
 \
@@ -16,5 +16,5 @@ def getInstructions():
 \
 \nA player with 15 or fewer cards will not have a spit pile. In this case, there will only be one middle pile. The loser of the round will take the middle pile. If the winning player of the round has no cards left, he/she wins the game.\
 ",
-'Rule': 'If both players cannot play, and neither player has a spit pile left, the round is over.  Players will slap a middle pile of cards to take for the next round.'
+'Rule': 'If both players cannot play, and neither player has a spit pile left, the round is over. Players will slap a middle pile of cards to take for the next round.'
     }

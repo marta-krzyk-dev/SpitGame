@@ -138,14 +138,13 @@ class Player(ConsoleInputOutputManipulator):
     def GetDuplicateIndexes(self):
         front_cards = self.GetFrontCards(omit_empty_piles=True)
         duplicate_indexes = []
-        print(f'Front cards: {front_cards}')
+
         # TODO Reformat loop into comprehension list
         for c in front_cards:
             indexes = [i for i in range(len(front_cards)) if front_cards[i] == c]
             if len(indexes) > 1 and indexes not in duplicate_indexes:
                 duplicate_indexes.append(indexes)
 
-        print(f'GetDipulcateIndexes retrining {duplicate_indexes}')
         return duplicate_indexes
 
     def MoveDuplicatesToLeft(self, duplicate_indexes):

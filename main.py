@@ -6,5 +6,5 @@ game.PrintTitle()
 game.CreatePlayers(ask_for_names=False)
 
 while True:
-    game.PlayRound()
-    game.PrintScores()
+    game.PlayGame()
+    game.PrintTitle()

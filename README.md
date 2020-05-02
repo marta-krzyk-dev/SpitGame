@@ -19,7 +19,8 @@ TO DOs:
 - [ ] Recognize draw
 - [x] Don't ask to stack up the same duplicates more than once
 - [ ] Move AddCardToSpitPile , MoveCardsInPlayersPile to Player class
-
+- [ ] Recognize end of the game!
+- [ ] rearrange cards after a player won!
 TESTS use commands when:
 - [x] Game prompts for player's names
 - [ ] Both users cannot move and they add cards to their spit piles
@@ -30,9 +31,7 @@ TESTS use commands when:
 TODOs
 - [ ] Move AskForName to pLayer class?
 - [ ] Merge method GetInputWithAllowedAnswers into GetInput
-- [ ] Use ConvertCardToNumericValue in Player
 - [ ] Uniform print cards methods (remove some if possible)
-- [ ] Show number of cards in piles
 
 TESTS:
 - [x] Create player with 15+ character name, check score table

@@ -17,10 +17,18 @@ class SpitGame(ConsoleInputOutputManipulator):
         self.round_number = 0
     # endregion
 
+    # region Main methods
+    def PlayGame(self):
+
+        self.round_number = 0
+
+        while end is False:
+            end = self.PlayRound()
+            self.PrintScores()
+
     def PlayRound(self):
         self.round_number += 1
         self.PrintRound()
-        self.PrintScores()
 
         while True:
             self.ChangePlayer()
@@ -35,20 +43,50 @@ class SpitGame(ConsoleInputOutputManipulator):
                 continue
             elif not current_player_can_move and not other_player_can_move:
                 self.Draw()
-                return
+                return False
 
             self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and fill empty spots
 
             if self.current_player.HasValidPairs(spit_cards):
                 self.AddCardToSpitPile(self.current_player)
             else:
-                self.current_player.PrintReverse(
-                    f"{self.current_player.name}, you don't have a valid pair to add to any spit pile. End of turn for you!")
+                self.current_player.PrintReverse(f"{self.current_player.name}, you don't have a valid pair to add to any spit pile. End of turn for you!")
 
-            if self.current_player.HasNoCardsInPiles():
-                print(f"{self.current_player.name} WON ROUND {self.round_number}!")
-                self.current_player.AddToScore()
-                return # End the round
+            if self.current_player.HasNoCards():
+                self.GameWin(winner=self.current_player)
+                return True
+            elif self.current_player.HasNoCardsInPiles():
+                self.RoundWin(winner=self.current_player, loser=self.other_player)
+                return False
+
+    def GameWin(self, winner):
+        winner.PrintReverse(f"{winner.name}, YOU THE GAME after {self.round_number} round{'' if self.round_number == 1 else 's'}!")
+        winner.AddToScore()
+
+    def RoundWin(self, winner, loser):
+        winner.PrintReverse(f"{winner.name}, YOU WON ROUND {self.round_number}!")
+        loser.PrintReverse(f"{loser.name}, YOU LOST ROUND {self.round_number}!")
+
+        winner.AddToScore()
+
+        spit1, spit2 = self.ChooseSpits(choosing_player=winner)
+        winner.ShuffleCards(spit1)
+        loser.ShuffleCards(spit2)
+
+        winner.Print(f"{winner.name}, spit pile with {len(spit1)} cards was added to your cards and reshuffled.")
+        loser.Print(f"{loser.name}, spit pile with {len(spit2)} cards was added to your cards and reshuffled.")
+
+    def Draw(self):
+        self.Print(f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards, this is end of round {self.round_number}.")
+        spit1 = self.current_player.spit_pile
+        spit2 = self.other_player.spit_pile
+        self.current_player.ShuffleCards(spit1)
+        self.other_player.ShuffleCards(spit2)
+        self.current_player.Print(
+            f"{self.current_player.name}, spit pile with {len(spit1)} cards was added to your cards and reshuffled.")
+        self.other_player.Print(
+            f"{self.other_player.name}, spit pile with {len(spit2)} cards was added to your cards and reshuffled.")
+    # endregion
 
     def ChooseSpits(self, choosing_player):
         answer = self.GetInputWithAllowedAnswers(f"{choosing_player.name}, choose spit pile 1 ({len(self.player1.spit_pile)} cards) or spit pile 2 ({len(self.player2.spit_pile)} cards) to add to your cards (type 1 or 2):", ['1', '2'])
@@ -115,19 +153,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.player1.spit_pile.insert(0, pile_card)
                 break
 
-        # print(f"Removing card {player.card_piles[pile_index][0]} from pile {pile_index}")
         del player.card_piles[pile_index][0]
-
-    def Draw(self):
-        self.Print(
-            f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards, this is end of round {self.round_number}.")
-        spit1, spit2 = self.ChooseSpits(choosing_player=self.current_player)
-        self.current_player.ShuffleCards(spit1)
-        self.other_player.ShuffleCards(spit2)
-        self.current_player.Print(
-            f"{self.current_player.name}, spit pile with {len(spit1)} cards {spit1} was added to your cards.")
-        self.other_player.Print(
-            f"{self.other_player.name}, spit pile with {len(spit2)} cards {spit2} was added to your cards.")
 
     def ChangePlayer(self):
         if self.current_player == self.player1:
@@ -149,10 +175,11 @@ class SpitGame(ConsoleInputOutputManipulator):
     def MoveCardsInPlayersPile(self, player):
 
         duplicates = player.GetDuplicateIndexes()
-        print(f'Here are duplicates: {duplicates}')
+        old_duplicates = []
         while True:
             if len(duplicates) > 0:
                 player.MoveDuplicatesToLeft(duplicates)
+                old_duplicates += duplicates
                 self.PrintGame()
 
             while True:
@@ -163,12 +190,9 @@ class SpitGame(ConsoleInputOutputManipulator):
                     break
 
             # Check again for duplicates after moving cards to empty spots
-            print(f'{duplicates}')
-            new_duplicates = [i for i in player.GetDuplicateIndexes() if i not in duplicates]
+            new_duplicates = [i for i in player.GetDuplicateIndexes() if i not in old_duplicates]
             if len(new_duplicates) > 0:
                 duplicates = new_duplicates
-                #TODO remove log
-                print(f'There are new duplicates: {duplicates}')
             else:
                 return
 
@@ -258,11 +282,16 @@ class SpitGame(ConsoleInputOutputManipulator):
         self.PrintCentered(row5)
 
     def PrintRound(self):
-        art = f"\n\
-  ^    ^    ^    ^    ^    ^  \n\
- / \  / \  / \  / \  / \  / \ \n\
-<_R_><_O_><_U_><_N_><_D_><{str(self.round_number).center(3, '_')}>"
-
+        art = f"\
+                                              $$\ \n\
+                                              $$ |		.------.\n\
+ $$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$\   $$$$$$$ |		| {str(self.round_number).ljust(2, ' ')}   |\n\
+$$  __$$\ $$  __$$\ $$ |  $$ |$$  __$$\ $$  __$$ |		| :##: |\n\
+$$ |  \__|$$ /  $$ |$$ |  $$ |$$ |  $$ |$$ /  $$ |		| :##: |\n\
+$$ |      $$ |  $$ |$$ |  $$ |$$ |  $$ |$$ |  $$ |		|   {str(self.round_number).rjust(2, ' ')} |\n\
+$$ |      \$$$$$$  |\$$$$$$  |$$ |  $$ |\$$$$$$$ |		.------.\n\
+\__|       \______/  \______/ \__|  \__| \_______|\n\
+"
         self.PrintCentered(art)
 
     def GetScoreResults(self, score1, score2):
