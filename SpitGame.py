@@ -7,14 +7,15 @@ from Project4_Split.card_helpers import IsValidPair
 
 
 class SpitGame(ConsoleInputOutputManipulator):
+    # region Constructor
     def __init__(self, pile_count=5):
-
         ConsoleInputOutputManipulator.__init__(self, font_color="cyan")
 
         self.pile_count = pile_count
         self.current_player = None
         self.other_player = None
         self.round_number = 1
+    # endregion
 
     def PlayRound(self):
 
@@ -25,10 +26,9 @@ class SpitGame(ConsoleInputOutputManipulator):
         while True:
 
             self.ChangePlayer()
-            self.current_player.AdjustCardsForTesting()
+            #self.current_player.AdjustCardsForTesting()
 
             self.PrintGame()
-
 
             spit_cards = getFirstElements(self.current_player.spit_pile, self.other_player.spit_pile)
             current_player_can_move = self.current_player.CanMakeAnyMove(spit_cards)
@@ -45,7 +45,7 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.ChangePlayer()  # Stay with the same player for the next round
                 continue
 
-            self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and empty spots
+            self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and fill empty spots
 
             if self.current_player.HasValidPairs(spit_cards):
                 self.MoveCards(self.current_player)
@@ -54,13 +54,20 @@ class SpitGame(ConsoleInputOutputManipulator):
                 spit1, spit2 = self.ChooseSpits(self.current_player)
                 self.current_player.ShuffleCards(spit1)
                 self.other_player.ShuffleCards(spit2)
-                print(f"{self.current_player.name} WON!")
+                self.current_player.Print(f"{self.current_player.name}, spit pile with {len(spit1)} cards {spit1} was added to your cards.")
+                self.other_player.Print(f"{self.other_player.name}, spit pile with {len(spit2)} cards {spit2} was added to your cards.")
+                print(f"{self.current_player.name} WON ROUND {self.round_number}!")
                 break
             elif self.Draw():
                 print(f"DRAW!")
 
-    def ChooseSpits(self, player):
-        return player.spit_pile, player.spit_pile
+    def ChooseSpits(self, choosing_player):
+        answer = self.GetInputWithAllowedAnswers(f"{choosing_player.name}, choose spit pile to add to your cards (type 1 or 2):", ['1', '2'])
+
+        if answer == '1':
+            return self.player1.spit_pile, self.player2.spit_pile
+        else:
+            return self.player2.spit_pile, self.player1.spit_pile
 
     def CreatePlayers(self, use_defaults=False):
 
@@ -167,7 +174,7 @@ class SpitGame(ConsoleInputOutputManipulator):
             else:
                 return
 
-    # PRINT METHODS
+    # region Print methods
     def PrintTitle(self):
         try:
             with open("cards_art.txt", "r") as file:
@@ -270,3 +277,5 @@ class SpitGame(ConsoleInputOutputManipulator):
                 return 'WINNING', 'LOOSING'
         except TypeError:
             return 'UNKNOWN', 'UNKNOWN'
+
+    # endregion

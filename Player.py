@@ -7,6 +7,7 @@ from Project4_Split.card_helpers import ThereAreValidPairs, ConvertCardToNumeric
 
 
 class Player(ConsoleInputOutputManipulator):
+    #region Constructor
     def __init__(self, name, cards, pile_count, color="green"):
 
         ConsoleInputOutputManipulator.__init__(self, color)
@@ -18,7 +19,8 @@ class Player(ConsoleInputOutputManipulator):
         self.color = color if color in termcolor.COLORS.keys() else "green"
         self.score = 0
 
-        self.ArrangeCards(cards)
+        self.ArrangeCardsIntoPiles(cards)
+    #endregion
 
     def AddToScore(self):
         self.score += 1
@@ -33,10 +35,10 @@ class Player(ConsoleInputOutputManipulator):
         all_cards = pile_cards + new_cards
         shuffle(all_cards)
 
-        self.ArrangeCards(all_cards)
+        self.ArrangeCardsIntoPiles(all_cards)
 
-    def ArrangeCards(self, new_cards):
-        if not isinstance(new_cards, list):
+    def ArrangeCardsIntoPiles(self, cards):
+        if not isinstance(cards, list):
             raise TypeError
 
         self.card_piles = []
@@ -44,7 +46,7 @@ class Player(ConsoleInputOutputManipulator):
             self.card_piles.append([])
 
         begin = 0
-        card_count = len(new_cards)
+        card_count = len(cards)
 
         # Arrange cards into piles, like so:
         '''
@@ -56,15 +58,15 @@ class Player(ConsoleInputOutputManipulator):
         '''
         for y in range(self.pile_count):
             for x in range(begin, self.pile_count):
-                self.card_piles[x].append(new_cards[0])
-                del new_cards[0]
+                self.card_piles[x].append(cards[0])
+                del cards[0]
                 card_count -= 1
                 if card_count == 0:
                     break
             begin += 1
 
         # Put the rest of the cards into spit pile
-        self.spit_pile = new_cards
+        self.spit_pile = cards
 
     def ChooseCard(self, message=None, skip_phrase=None):
 
@@ -84,31 +86,6 @@ class Player(ConsoleInputOutputManipulator):
                 return pile_card, available_cards.index(pile_card)
             else:
                 print(f"Invalid card. Try again.")
-
-    def PrintCards(self, print_name_above_cards=True):
-
-        row1 = ""
-        row2 = ""
-        row3 = ""
-        pile_sizes_row = ""
-        for pile in self.card_piles:
-            row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
-            character = getFirst(pile, '░')
-            row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
-            row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
-            pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  " if len(pile) > 1 else " " * 6
-
-        if print_name_above_cards:
-            self.PrintReverse(f"{self.name}".center(50))
-            self.Print(pile_sizes_row.center(50))
-
-        self.Print(row1.center(50))
-        self.Print(row2.center(50))
-        self.Print(row3.center(50))
-
-        if not print_name_above_cards:
-            self.Print(pile_sizes_row.center(50))
-            self.PrintReverse(f"{self.name}".center(50))
 
     def HasNoCards(self):
         return sum(len(pile) for pile in self.card_piles) == 0
@@ -197,11 +174,9 @@ class Player(ConsoleInputOutputManipulator):
         return ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))
 
     def CanMakeAnyMove(self, spit_cards):
-        print(
-            f"There are valid pair for player {self.name} {ThereAreValidPairs(spit_cards, self.GetFrontCards(omit_empty_piles=True))} has duplicates {self.HasDuplicates()}   can move cards to empty: {self.CanMoveCardToEmptySpot()}")
-        return ThereAreValidPairs(spit_cards, self.GetFrontCards(
-            omit_empty_piles=True)) or self.HasDuplicates() or self.CanMoveCardToEmptySpot()
+        return self.HasValidPairs(spit_cards) or self.HasDuplicates() or self.CanMoveCardToEmptySpot()
 
+    # region Empty spot logic
     def CanMoveCardToEmptySpot(self):
 
         if self.GetCardCount() <= self.pile_count:
@@ -251,6 +226,34 @@ class Player(ConsoleInputOutputManipulator):
             self.card_piles[to_pile_index].insert(0, temp)
         except IndexError:
             pass
+    # endregion
+
+    # region Print methods
+    def PrintCards(self, print_name_above_cards=True):
+
+        row1 = ""
+        row2 = ""
+        row3 = ""
+        pile_sizes_row = ""
+        for pile in self.card_piles:
+            row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
+            character = getFirst(pile, '░')
+            row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
+            row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
+            pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  " if len(pile) > 1 else " " * 6
+
+        if print_name_above_cards:
+            self.PrintReverse(f"{self.name}".center(50))
+            self.Print(pile_sizes_row.center(50))
+
+        self.Print(row1.center(50))
+        self.Print(row2.center(50))
+        self.Print(row3.center(50))
+
+        if not print_name_above_cards:
+            self.Print(pile_sizes_row.center(50))
+            self.PrintReverse(f"{self.name}".center(50))
+    # endregion
 
     def AdjustCardsForTesting(self):
         self.card_piles[0] = ['2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2']

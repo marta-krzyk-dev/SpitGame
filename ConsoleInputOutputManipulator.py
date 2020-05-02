@@ -58,6 +58,7 @@ class ConsoleInputOutputManipulator:
         input = input.replace(" ", "").lower()
         return input == "--help" or input == "--resume"
 
+    #TODO merge with GetInput
     def GetInputWithAllowedAnswers(self, message="", allowed_answers=[], inside_command=False):
 
         allowed_answers = [str(x).lower() for x in allowed_answers]

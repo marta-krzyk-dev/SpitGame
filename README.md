@@ -6,6 +6,7 @@ TO DOs:
 - [x] command -- resume resumes the game
 - [ ] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [ ] 2 players can connect via internal network, python-request library, Flask
+- [ ] spits are part of SpitGame class, not players?
 - [x] implement Spit's logic
 - [ ] show winner at the end (scores)
 - [x] Save score between rounds
@@ -29,6 +30,7 @@ TODOs
 - [ ] Move AskForName to pLayer class?
 - [ ] Merge method GetInputWithAllowedAnswers into GetInput
 - [ ] Use ConvertCardToNumericValue in Player
+- [ ] Uniform print cards methods (remove some if possible)
 
 TESTS:
 - [x] Create player with 15+ character name, check score table
