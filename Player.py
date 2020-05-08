@@ -141,6 +141,8 @@ class Player(ConsoleInputOutputManipulator):
 
         # TODO Reformat loop into comprehension list
         for c in front_cards:
+            if c == ' ':
+                continue
             indexes = [i for i in range(len(front_cards)) if front_cards[i] == c]
             if len(indexes) > 1 and indexes not in duplicate_indexes:
                 duplicate_indexes.append(indexes)
