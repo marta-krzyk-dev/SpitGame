@@ -13,8 +13,6 @@ Features:
 - [x] User can choose to move a stack a duplicated card with 'y' , 'n'
 - [ ] Redraw game when resuming game
 - [x] Ask player to stack duplicates only once (per duplicate)
-- [ ] Recognize draw
-- [ ] Move AddCardToSpitPile , MoveCardsInPlayersPile to Player class
 
 TESTS use commands when:
 - [x] Game prompts for player's names
@@ -27,9 +25,9 @@ TESTS:
 - [x] Create player with 15+ character name, check score table
 - [ ] Play 2 full rounds
 - [ ] Have both players outta moves
+- [ ] In the second round, the winner must be their cards
 
 TODOs
-- [ ] Move AskForName to pLayer class?
 - [ ] Merge method GetInputWithAllowedAnswers into GetInput
 - [ ] Uniform print cards methods (remove some if possible)
 

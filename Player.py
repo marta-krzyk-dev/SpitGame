@@ -3,7 +3,7 @@ from termcolor import colored
 from Project4_Split.helpers import getFirst, tryConvertToInt
 from Project4_Split.ConsoleInputOutputManipulator import ConsoleInputOutputManipulator
 from random import shuffle
-from Project4_Split.card_helpers import ThereAreValidPairs, ConvertCardToNumericValue
+from Project4_Split.card_helpers import ThereAreValidPairs, ConvertCardToNumericValue, IsValidPair
 
 
 class Player(ConsoleInputOutputManipulator):
@@ -72,7 +72,7 @@ class Player(ConsoleInputOutputManipulator):
 
     def ChooseCard(self, message=None, skip_phrase=None):
 
-        available_cards = self.GetFrontCards()
+        available_cards = self.GetFrontCards(omit_empty_piles=True)
 
         while True:
             pile_card = self.GetInput(
@@ -157,7 +157,7 @@ class Player(ConsoleInputOutputManipulator):
 
             for duplicate_index in indexes[1:]:
                 while True:
-                    answer = self.GetInputWithAllowedAnswers(
+                    answer = self.GetInput(
                         f"{self.name}, do you want to stack duplicate card {card} from #{duplicate_index + 1} to #{left_most_index + 1} pile? (y/n)",
                         allowed_answers=['y', 'n']).strip()
                     if self.IsCommand(answer) or len(answer) == 0:
@@ -231,6 +231,8 @@ class Player(ConsoleInputOutputManipulator):
             self.card_piles[to_pile_index].insert(0, temp)
         except IndexError:
             pass
+        except TypeError:
+            pass
     # endregion
 
     # region Print methods
@@ -269,10 +271,18 @@ class Player(ConsoleInputOutputManipulator):
         self.spit_pile = ['2', '2']
 
 
-    def AdjustCardsForTesting2(self):
-        self.card_piles[0] = ['4']
-        self.card_piles[1] = ['2']
-        self.card_piles[2] = ['4']
-        self.card_piles[3] = ['2']
-        self.card_piles[4] = ['4']
-        self.spit_pile = ['K', '2']
+    def AdjustCardsForTestingDolphin(self):
+        self.card_piles[0] = ['A','4']
+        self.card_piles[1] = []
+        self.card_piles[2] = ['J', 'J']
+        self.card_piles[3] = ['J']
+        self.card_piles[4] = ['K']
+        self.spit_pile = ['6', '2']
+
+    def AdjustCardsForTestingParrot(self):
+        self.card_piles[0] = []
+        self.card_piles[1] = ['3']
+        self.card_piles[2] = ['Q', 'Q']
+        self.card_piles[3] = ['J','J','J']
+        self.card_piles[4] = ['A']
+        self.spit_pile = ['5', '2']

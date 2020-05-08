@@ -59,7 +59,7 @@ class ConsoleInputOutputManipulator:
         return input == "--help" or input == "--resume"
 
     #TODO merge with GetInput
-    def GetInputWithAllowedAnswers(self, message="", allowed_answers=[], inside_command=False):
+    def GetInput(self, message="", allowed_answers=[], inside_command=False):
 
         allowed_answers = [str(x).lower() for x in allowed_answers]
 
@@ -79,7 +79,10 @@ class ConsoleInputOutputManipulator:
                 print("--help       Print instructions")
                 print("--resume     Resume the game")
                 self.GetInput(inside_command=inside_command)
+            elif not allowed_answers:
+                return answer
 
+    '''
     def GetInput(self, message="", inside_command= False):
         answer = input(colored(message, self.font_color, attrs=["bold", "reverse"]))  # Remove whitespaces
         formatted_answer = answer.replace(" ", "").lower()
@@ -96,7 +99,7 @@ class ConsoleInputOutputManipulator:
             self.GetInput(inside_command=inside_command)
 
         return answer
-
+    '''
     def Command(self, input):
         if False == input is str:
             raise TypeError

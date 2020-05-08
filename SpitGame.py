@@ -30,6 +30,7 @@ class SpitGame(ConsoleInputOutputManipulator):
     def PlayRound(self):
         self.round_number += 1
         self.PrintRound()
+        turns_without_spit_move = 0
 
         while True:
             self.ChangePlayer()
@@ -39,18 +40,20 @@ class SpitGame(ConsoleInputOutputManipulator):
             current_player_can_move = self.current_player.CanMakeAnyMove(spit_cards)
             other_player_can_move = self.other_player.CanMakeAnyMove(spit_cards)
 
-            if not current_player_can_move and other_player_can_move:
-                self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a turn!")
-                continue
-            elif not current_player_can_move and not other_player_can_move:
+            if (turns_without_spit_move > 2) or (not current_player_can_move and not other_player_can_move):
                 self.Draw()
                 return False
+            elif not current_player_can_move and other_player_can_move:
+                self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a turn!")
+                continue
 
             self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and fill empty spots
 
             if self.current_player.HasValidPairs(spit_cards):
+                turns_without_spit_move = 0
                 self.AddCardToSpitPile(self.current_player)
             else:
+                turns_without_spit_move += 1
                 self.current_player.PrintReverse(f"{self.current_player.name}, you don't have a valid pair to add to any spit pile. End of turn for you!")
 
             if self.current_player.HasNoCards():
@@ -91,7 +94,7 @@ class SpitGame(ConsoleInputOutputManipulator):
 
     # region Helper methods
     def ChooseSpits(self, choosing_player):
-        answer = self.GetInputWithAllowedAnswers(f"{choosing_player.name}, choose spit pile 1 ({len(self.player1.spit_pile)} cards) or spit pile 2 ({len(self.player2.spit_pile)} cards) to add to your cards (type 1 or 2):", ['1', '2'])
+        answer = self.GetInput(f"{choosing_player.name}, choose spit pile 1 ({len(self.player1.spit_pile)} cards) or spit pile 2 ({len(self.player2.spit_pile)} cards) to add to your cards (type 1 or 2):", ['1', '2'])
 
         if answer == '1':
             return self.player1.spit_pile, self.player2.spit_pile
