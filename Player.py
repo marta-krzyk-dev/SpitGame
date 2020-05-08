@@ -136,7 +136,7 @@ class Player(ConsoleInputOutputManipulator):
         return len(front_cards) != len(unique_front_cards)
 
     def GetDuplicateIndexes(self):
-        front_cards = self.GetFrontCards(omit_empty_piles=True)
+        front_cards = self.GetFrontCards(omit_empty_piles=False)
         duplicate_indexes = []
 
         # TODO Reformat loop into comprehension list

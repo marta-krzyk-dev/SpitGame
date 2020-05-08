@@ -16,7 +16,7 @@ Features:
 
 TESTS use commands when:
 - [x] Game prompts for player's names
-- [ ] Both users cannot move and they add cards to their spit piles
+- [x] Both users cannot move and they add cards to their spit piles
 - [x] User chooses a card
 - [x] User chooses a card to move to an empty spot
 - [x] User agrees to stack cards onto another 
@@ -24,6 +24,7 @@ TESTS use commands when:
 TESTS:
 - [x] Create player with 15+ character name, check score table
 - [ ] Play 2 full rounds
+- [ ] Play 1 full game
 - [ ] Have both players outta moves
 - [ ] In the second round, the winner must be their cards
 
