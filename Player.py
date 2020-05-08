@@ -85,7 +85,7 @@ class Player(ConsoleInputOutputManipulator):
                 continue
 
             if pile_card in available_cards:
-                return pile_card, available_cards.index(pile_card)
+                return pile_card, self.GetFrontCards(omit_empty_piles=False).index(pile_card)
             else:
                 print(f"Invalid card. Try again.")
 
@@ -230,8 +230,6 @@ class Player(ConsoleInputOutputManipulator):
             del self.card_piles[from_pile_index][0]
             self.card_piles[to_pile_index].insert(0, temp)
         except IndexError:
-            pass
-        except TypeError:
             pass
     # endregion
 
