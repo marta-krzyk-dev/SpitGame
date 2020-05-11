@@ -25,24 +25,23 @@ TESTS use commands when:
 MENUAL TESTS:
 - [x] Create player with 15+ character name, check score table
 - [ ] Play 2 full rounds
-- [ ] Play 1 full game
+- [x] Play 1 full game
 - [ ] Have both players outta moves
 - [ ] In the second round, the winner must be their cards
 
 TODOs
-- [ ] Merge method GetInputWithAllowedAnswers into GetInput
+- [x] Merge method GetInputWithAllowedAnswers into GetInput
 - [ ] Uniform print cards methods (remove some if possible)
-- [ ] Bug: If there is the same card under the duplpicate, it won't be caught as new duplicate
+- [x] Bug: If there is the same card under the duplpicate, it won't be caught as new duplicate
 
 Special scenarios:
 - [x] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
 
 Gameplay:
-- [ ] Player can choose the card to be added to spit pile
-- [ ] If card is repeated in their piles, the duplicate will be placed on the leftmost pile
-- [ ] If the chosen cad can be put into 2 spit piles, the leftmost spit is chosen
-- [ ] If the player cannot move a card, they lose their turn
-- [ ] If both players cannot move a card, they both put any card to their spit piles
-- [ ] Game automatically moves a duplicate card to the left pile to reveal another card. This is repeated until no more duplicate moving is possible
-- [ ] If player has an empty pile, a card from right-most pile is moved to reveal another card. This is reperated till possible
-- [ ] Player can choose a card to be moved onto an empty spot
+- [x] Player can choose the card to be added to spit pile
+- [x] If card is repeated in their piles, the duplicate will be placed on the leftmost pile
+- [x] If the chosen cad can be put into 2 spit piles, the leftmost spit is chosen
+- [x] If the player cannot move a card, they lose their turn
+- [x] If both players cannot move a card, they both put any card to their spit piles
+- [x] If player has an empty pile, a card from right-most pile is moved to reveal another card. This is repeated till there are empty spots
+- [x] Player can choose a card to be moved onto an empty spot
