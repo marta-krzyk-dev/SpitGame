@@ -25,11 +25,6 @@ class Player(ConsoleInputOutputManipulator):
     def AddToScore(self):
         self.score += 1
 
-    # TODO remove
-    def PrintCardsAsArray(self):
-        for pile in self.card_piles:
-            print(pile)
-
     def ShuffleCards(self, new_cards):
         pile_cards = [x for sublist in self.card_piles for x in sublist]
         all_cards = pile_cards + new_cards
