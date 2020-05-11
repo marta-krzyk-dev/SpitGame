@@ -48,7 +48,6 @@ class ConsoleInputOutputManipulator:
 
         for p in paragraphDict:
             self.Print(f"\n*** {p.upper()} ***\n", "blue", ['bold','reverse'])
-            #print(colored(f"*** {p.upper()} ***".center(50), "blue", attrs=['bold','reverse']))
             print(colored(paragraphDict[p], "white", attrs=['bold']))
 
         if len(paragraphDict) > 0:
