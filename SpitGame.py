@@ -125,7 +125,7 @@ class SpitGame(ConsoleInputOutputManipulator):
     def AskForName(self, temporary_player_name, existing_names=[], max_len=15):
         while True:
             name = self.GetInput(f"{temporary_player_name}, enter your name >>").strip()
-            
+
             if len(name) > 0:
                 if name in existing_names:
                     self.Print("Player with that name already exists.")
