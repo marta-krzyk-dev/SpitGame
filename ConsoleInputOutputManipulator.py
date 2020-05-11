@@ -40,7 +40,6 @@ class ConsoleInputOutputManipulator:
         print(colored(text, self.font_color, attrs=["bold", "reverse"]))
 
     def PrintInstructions(self):
-        # self.ClearScreen()
         self.PrintParagraphs(getInstructions())
 
     def PrintParagraphs(self, paragraphDict):
@@ -48,7 +47,7 @@ class ConsoleInputOutputManipulator:
             return
 
         for p in paragraphDict:
-            self.Print(f"\n*** {p.upper()} ***\n", "blue", ['bold','reverse'])
+            self.Print(f"\n*** {p.upper()} ***\n", "blue", ['bold', 'reverse'])
             print(colored(paragraphDict[p], "white", attrs=['bold']))
 
         if len(paragraphDict) > 0:
@@ -58,35 +57,6 @@ class ConsoleInputOutputManipulator:
         print("Available commands:")
         print("--help       Print instructions")
         print("--resume     Resume the game")
-
-    def PrintStacks(self, card_piles, arrow_color1, arrow_color2, print_size_above_cards=False, print_size_below_cards=False):
-
-            row_arrow_above = "  V    "
-            row1 = ""
-            row2 = ""
-            row3 = ""
-            row_arrow_below = "  X    "
-            pile_sizes_row = ""
-
-            for pile in card_piles:
-                row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
-                character = getFirst(pile, '░')
-                row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
-                row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
-                pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  "
-
-            if print_size_above_cards:
-                self.Print(pile_sizes_row.center(50))
-
-            self.Print(row_arrow_above.center(50), arrow_color1)
-            self.Print(row1.center(50))
-            self.Print(row2.center(50))
-            self.Print(row3.center(50))
-            self.Print(row_arrow_below.center(50), arrow_color2)
-
-            if not print_size_below_cards:
-                self.Print(pile_sizes_row.center(50))
-
     # endregion
 
     # region Input methods
