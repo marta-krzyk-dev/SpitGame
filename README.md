@@ -1,12 +1,13 @@
-# SplitGame
-Split card console game in Python
+# Spit Game
+Spit card console game in Python.
+[How to play Spit?](https://www.youtube.com/watch?v=yv7k6XYzgSo&t=32s)
+This project is made for Pirple's Python course.
 
 Features:
 - [x] Player's name is shortened to 15 characters
 - [x] command --help print the game's instructions (at any point of the game)
 - [x] command -- resume resumes the game
 - [x] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
-- [ ] 2 players can connect via internal network, python-request library, Flask
 - [x] Save score between rounds
 - [x] print graphical cards onto screen
 - [ ] Defect infinite loop when there are around 5 cards, some can be stacked onto 1 pile, then player is prompted to move card to an empty place
@@ -21,7 +22,7 @@ TESTS use commands when:
 - [x] User chooses a card to move to an empty spot
 - [x] User agrees to stack cards onto another 
 
-TESTS:
+MENUAL TESTS:
 - [x] Create player with 15+ character name, check score table
 - [ ] Play 2 full rounds
 - [ ] Play 1 full game
@@ -31,6 +32,7 @@ TESTS:
 TODOs
 - [ ] Merge method GetInputWithAllowedAnswers into GetInput
 - [ ] Uniform print cards methods (remove some if possible)
+- [ ] Bug: If there is the same card under the duplpicate, it won't be caught as new duplicate
 
 Special scenarios:
 - [x] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
