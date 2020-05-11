@@ -27,6 +27,8 @@ class SpitGame(ConsoleInputOutputManipulator):
             end = self.PlayRound()
             self.PrintScores()
 
+        self.Print('END OF THE GAME')
+
     def PlayRound(self):
         self.round_number += 1
         self.PrintRound()
@@ -47,7 +49,9 @@ class SpitGame(ConsoleInputOutputManipulator):
                 self.current_player.PrintReverse(f"{self.current_player.name}, you cannot move a card. You lose a turn!")
                 continue
 
-            self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and fill empty spots
+            fewer_cards_than_piles = self.current_player.GetPileCardCount() <= self.pile_count
+            if not fewer_cards_than_piles:
+                self.MoveCardsInPlayersPile(self.current_player) # Move duplicates and fill empty spots
 
             if self.current_player.HasValidPairs(spit_cards):
                 turns_without_spit_move = 0
@@ -77,8 +81,8 @@ class SpitGame(ConsoleInputOutputManipulator):
         winner.ShuffleCards(spit1)
         loser.ShuffleCards(spit2)
 
-        winner.Print(f"{winner.name}, spit pile with {len(spit1)} cards was added to your cards and reshuffled.")
-        loser.Print(f"{loser.name}, spit pile with {len(spit2)} cards was added to your cards and reshuffled.")
+        winner.PrintReverse(f"{winner.name}, spit pile with {len(spit1)} cards was added to your cards and reshuffled.")
+        loser.PrintReverse(f"{loser.name}, spit pile with {len(spit2)} cards was added to your cards and reshuffled.")
 
     def Draw(self):
         self.Print(f"{self.current_player.name}, {self.other_player.name}, you both cannot move any cards, this is end of round {self.round_number}.")
@@ -121,10 +125,7 @@ class SpitGame(ConsoleInputOutputManipulator):
     def AskForName(self, temporary_player_name, existing_names=[], max_len=15):
         while True:
             name = self.GetInput(f"{temporary_player_name}, enter your name >>").strip()
-
-            if self.IsCommand(name):
-                continue
-
+            
             if len(name) > 0:
                 if name in existing_names:
                     self.Print("Player with that name already exists.")
@@ -174,8 +175,8 @@ class SpitGame(ConsoleInputOutputManipulator):
         old_duplicates = []
         while True:
             if len(duplicates) > 0:
-                player.MoveDuplicatesToLeft(duplicates)
-                old_duplicates += duplicates
+                _, rejected_duplicates = player.MoveDuplicatesToLeft(duplicates)
+                old_duplicates += rejected_duplicates
                 self.PrintGame()
 
             while True:
@@ -189,6 +190,7 @@ class SpitGame(ConsoleInputOutputManipulator):
             new_duplicates = [i for i in player.GetDuplicateIndexes() if i not in old_duplicates]
             if len(new_duplicates) > 0:
                 duplicates = new_duplicates
+
             else:
                 return
     # endregion
