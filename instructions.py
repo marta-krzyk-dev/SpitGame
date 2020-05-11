@@ -17,5 +17,6 @@ def getInstructions():
 \nA player with 15 or fewer cards will not have a spit pile. In this case, there will only be one middle pile. The loser of the round will take the middle pile. If the winning player of the round has no cards left, he/she wins the game.\
 ",
 'Rule': 'If both players cannot play, and neither player has a spit pile left, the round is over. Players will slap a middle pile of cards to take for the next round.',
-'Rule': 'If a player can put a card into either spit pile, the left spit pile will be chosen.'
+'Rule': 'If a player can put a card into either spit pile, the left spit pile will be chosen.',
+'Rule': 'If there are duplicate cards that can be put into a spit pile, the leftmost duplicate will be drawn.'
     }
