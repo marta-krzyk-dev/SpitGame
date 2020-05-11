@@ -15,6 +15,7 @@ class ConsoleInputOutputManipulator:
     def ClearConsole(self):
         system('cls')
 
+    # region Print methods
     def Print(self, text, color=None, attributes=["bold"]):
         if not isinstance(text, str):
             return
@@ -53,12 +54,48 @@ class ConsoleInputOutputManipulator:
         if len(paragraphDict) > 0:
             print()
 
+    def PrintCommands(self):
+        print("Available commands:")
+        print("--help       Print instructions")
+        print("--resume     Resume the game")
+
+    def PrintStacks(self, card_piles, arrow_color1, arrow_color2, print_size_above_cards=False, print_size_below_cards=False):
+
+            row_arrow_above = "  V    "
+            row1 = ""
+            row2 = ""
+            row3 = ""
+            row_arrow_below = "  X    "
+            pile_sizes_row = ""
+
+            for pile in card_piles:
+                row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
+                character = getFirst(pile, '░')
+                row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
+                row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
+                pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  "
+
+            if print_size_above_cards:
+                self.Print(pile_sizes_row.center(50))
+
+            self.Print(row_arrow_above.center(50), arrow_color1)
+            self.Print(row1.center(50))
+            self.Print(row2.center(50))
+            self.Print(row3.center(50))
+            self.Print(row_arrow_below.center(50), arrow_color2)
+
+            if not print_size_below_cards:
+                self.Print(pile_sizes_row.center(50))
+
+    # endregion
+
+    # region Input methods
+        #TODO REmove
     def IsCommand(self, input):
         input = input.replace(" ", "").lower()
         return input == "--help" or input == "--resume"
 
-    #TODO merge with GetInput
-    def GetInput(self, message="", allowed_answers=[], inside_command=False):
+    def GetInput(self, message="", allowed_answers=[]):
 
         allowed_answers = [str(x).lower() for x in allowed_answers]
 
@@ -70,35 +107,21 @@ class ConsoleInputOutputManipulator:
                 return answer
             elif formatted_answer == "--help":
                 self.PrintInstructions()
-                self.GetInput("Use --resume to go back to the game", inside_command=True)
+                while True:
+                    answer_ = input().replace(" ", "").lower()
+                    if answer_ == '--resume':
+                        break
+                    elif answer_ == '--help':
+                        self.PrintInstructions()
+                    else:
+                        self.PrintCommands()
             elif formatted_answer == "--resume":
-                return answer
-            elif formatted_answer.startswith("--") or inside_command:
-                print("Available commands:")
-                print("--help       Print instructions")
-                print("--resume     Resume the game")
-                self.GetInput(inside_command=inside_command)
+                continue
+            elif formatted_answer.startswith("--"):
+                self.PrintCommands()
             elif not allowed_answers:
                 return answer
 
-    '''
-    def GetInput(self, message="", inside_command= False):
-        answer = input(colored(message, self.font_color, attrs=["bold", "reverse"]))  # Remove whitespaces
-        formatted_answer = answer.replace(" ", "").lower()
-
-        if formatted_answer == "--help":
-            self.PrintInstructions()
-            self.GetInput("Use --resume to go back to the game", inside_command=True)
-        elif formatted_answer == "--resume":
-            return answer
-        elif formatted_answer.startswith("--") or inside_command:
-            print("Available commands:")
-            print("--help       Print instructions")
-            print("--resume     Resume the game")
-            self.GetInput(inside_command=inside_command)
-
-        return answer
-    '''
     def Command(self, input):
         if False == input is str:
             raise TypeError
@@ -115,31 +138,4 @@ class ConsoleInputOutputManipulator:
             print("--resume     Resumes the game")
 
         return answer
-
-    def PrintStacks(self, card_piles, arrow_color1, arrow_color2, print_size_above_cards=False, print_size_below_cards=False):
-
-        row_arrow_above = "  V    "
-        row1 = ""
-        row2 = ""
-        row3 = ""
-        row_arrow_below = "  X    "
-        pile_sizes_row = ""
-
-        for pile in card_piles:
-            row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
-            character = getFirst(pile, '░')
-            row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
-            row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
-            pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  "
-
-        if print_size_above_cards:
-            self.Print(pile_sizes_row.center(50))
-
-        self.Print(row_arrow_above.center(50), arrow_color1)
-        self.Print(row1.center(50))
-        self.Print(row2.center(50))
-        self.Print(row3.center(50))
-        self.Print(row_arrow_below.center(50), arrow_color2)
-
-        if not print_size_below_cards:
-            self.Print(pile_sizes_row.center(50))
+    # endregion
