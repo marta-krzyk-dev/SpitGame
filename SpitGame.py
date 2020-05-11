@@ -8,13 +8,15 @@ from Project4_Split.card_helpers import IsValidPair
 
 class SpitGame(ConsoleInputOutputManipulator):
     # region Constructor
-    def __init__(self, pile_count=5):
+    def __init__(self, pile_count=5, clear_console_with_every_turn_=False):
         ConsoleInputOutputManipulator.__init__(self, font_color="cyan")
 
         self.pile_count = pile_count
         self.current_player = None
         self.other_player = None
         self.round_number = 0
+
+        self.clear_console_with_every_turn = clear_console_with_every_turn_
     # endregion
 
     # region Main methods
@@ -222,7 +224,8 @@ class SpitGame(ConsoleInputOutputManipulator):
         self.Print("╚═" + "═" * max_name_len + "═╩═" + ("═" * score_len) + "═╩═" + ("═" * result_len) + "═╝")
 
     def PrintGame(self):
-        # self.ClearConsole()
+        if self.clear_console_with_every_turn:
+            self.ClearConsole()
         print()
         self.player1.PrintCards(print_name_above_cards=True)
         self.PrintStacks([self.player1.spit_pile, self.player2.spit_pile], self.player1.font_color,
