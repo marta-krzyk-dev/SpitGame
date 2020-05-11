@@ -108,7 +108,7 @@ class ConsoleInputOutputManipulator:
             elif formatted_answer == "--help":
                 self.PrintInstructions()
                 while True:
-                    answer_ = input().replace(" ", "").lower()
+                    answer_ = input(colored("Type --resume to get back to the game", self.font_color, attrs=["bold", "reverse"])).replace(" ", "").lower()
                     if answer_ == '--resume':
                         break
                     elif answer_ == '--help':
