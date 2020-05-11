@@ -152,10 +152,12 @@ class Player(ConsoleInputOutputManipulator):
     def MoveDuplicatesToLeft(self, duplicate_indexes):
 
         front_cards = self.GetFrontCards(omit_empty_piles=False)
+        removed_duplicates = []
+        rejected_duplicates = []
 
         for indexes in duplicate_indexes:
-            card = front_cards[indexes[0]]
             left_most_index = indexes[0]
+            card = front_cards[left_most_index]
 
             for duplicate_index in indexes[1:]:
                 while True:
@@ -168,8 +170,13 @@ class Player(ConsoleInputOutputManipulator):
                         break
 
                 if answer.startswith('y'):
+                    removed_duplicates.append([left_most_index, duplicate_index])
                     del self.card_piles[duplicate_index][0]
                     self.card_piles[left_most_index].insert(0, card)
+                else:
+                    rejected_duplicates.append([left_most_index, duplicate_index])
+
+        return removed_duplicates, rejected_duplicates
     # endregion
 
     def MoveAnyCardToSpitPile(self):
@@ -270,7 +277,6 @@ class Player(ConsoleInputOutputManipulator):
         self.card_piles[4] = ['K']
         self.spit_pile = ['2', '2']
 
-
     def AdjustCardsForTestingDolphin(self):
         self.card_piles[0] = ['A','4']
         self.card_piles[1] = []
@@ -286,3 +292,16 @@ class Player(ConsoleInputOutputManipulator):
         self.card_piles[3] = ['J','J','J']
         self.card_piles[4] = ['A']
         self.spit_pile = ['5', '2']
+
+    def AdjustCardsForTesting_WIn(self):
+        self.card_piles[0] = []
+        self.card_piles[1] = []
+        self.card_piles[2] = ['Q', 'Q']
+        self.card_piles[3] = []
+        self.card_piles[4] = []
+        self.spit_pile = []
+
+    def AdjustCardsForTesting_WIn2(self):
+
+        self.spit_pile = ['Q']
+
