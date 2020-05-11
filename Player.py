@@ -99,15 +99,8 @@ class Player(ConsoleInputOutputManipulator):
         return sum(len(pile) for pile in self.card_piles)
 
     def GetFrontCards(self, omit_empty_piles=False, default_if_empty_pile=' '):
-        #TODO use list comprehension
         if omit_empty_piles:
             return [pile[0] for pile in self.card_piles if len(pile) > 0]
-            '''
-            result = []
-            for pile in self.card_piles:
-                if len(pile) > 0:
-                    result.append(pile[0])
-            return result'''
         else:
             return [getFirst(i, default_if_empty_pile) for i in self.card_piles]
 
