@@ -116,7 +116,7 @@ class Player(ConsoleInputOutputManipulator):
             else:
                 print("Invalid card. Try again.")
 
-    # region Duplicates
+    # region Duplicates logic
     def HasDuplicates(self):
         front_cards = self.GetFrontCards(omit_empty_piles=True)
         unique_front_cards = set(front_cards)
