@@ -236,11 +236,11 @@ class SpitGame(ConsoleInputOutputManipulator):
     def PrintStacks(self, card_piles, arrow_color1, arrow_color2, print_size_above_cards=False,
                     print_size_below_cards=False):
 
-        row_arrow_above = f" ▼          "  # f"[{len(card_piles[0])}]  ▼          "
+        row_arrow_above = f" ▼          "
         row1 = ""
         row2 = ""
         row3 = ""
-        row_arrow_below = f"       ▲"  # [{len(card_piles[1])}]"
+        row_arrow_below = f"       ▲"
         pile_sizes_row = ""
 
         for pile in card_piles:
@@ -261,27 +261,6 @@ class SpitGame(ConsoleInputOutputManipulator):
 
         if print_size_below_cards:
             self.Print(pile_sizes_row.center(50))
-
-    def PrintSpitPiles(self, cards, color="white"):
-
-        row0 = "  ▼"
-        row1 = "┌──┐  " * len(cards)
-        row2 = ""
-        row3 = ""
-        row4 = ""
-        row5 = "▲"
-
-        for card in cards:
-            character = '░░' if str(card).strip() == "" else card
-            row2 += f"│{character.ljust(2)}│  "
-            row3 += f"└──┘  "
-            row4 += f" "
-
-        self.PrintCentered(row0)
-        print(colored(row1.center(50), color, attrs=["bold"]))
-        print(colored(row2.center(50), color, attrs=["bold"]))
-        print(colored(row3.center(50), color, attrs=["bold"]))
-        self.PrintCentered(row5)
 
     def PrintRound(self):
         art = f"\
