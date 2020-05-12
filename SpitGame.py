@@ -1,15 +1,17 @@
 from termcolor import colored
-from Project4_Split.helpers import getFirst, tryConvertToInt, getFirstElements
+from Project4_Split.CardPrinter import CardPrinter
+from Project4_Split.helpers import getFirst, getFirstElements
 from Project4_Split.Deck import Deck
 from Project4_Split.Player import Player
-from Project4_Split.ConsoleInputOutputManipulator import ConsoleInputOutputManipulator
+from Project4_Split.InputManipulator import InputManipulator
 from Project4_Split.card_helpers import IsValidPair
 
 
-class SpitGame(ConsoleInputOutputManipulator):
+class SpitGame(InputManipulator, CardPrinter):
     # region Constructor
     def __init__(self, pile_count=5, clear_console_with_every_turn_=False):
-        ConsoleInputOutputManipulator.__init__(self, font_color="cyan")
+        InputManipulator.__init__(self, font_color="cyan")
+        CardPrinter.__init__(self, font_color="cyan")
 
         self.pile_count = pile_count
         self.current_player = None
@@ -107,6 +109,13 @@ class SpitGame(ConsoleInputOutputManipulator):
         else:
             return self.player2.spit_pile, self.player1.spit_pile
 
+    def ReshuffleCards(self):
+        deck = Deck()
+        half1, half2 = deck.getHalves()
+
+        self.player1.ArrangeCardsIntoPiles(half1)
+        self.player2.ArrangeCardsIntoPiles(half2)
+
     def CreatePlayers(self, ask_for_names=True):
 
         if ask_for_names:
@@ -116,11 +125,10 @@ class SpitGame(ConsoleInputOutputManipulator):
             name1 = "Dolphin"
             name2 = "Parrot"
 
-        deck = Deck()
-        half1, half2 = deck.getHalves()
+        self.player1 = Player(name1, [], self.pile_count, "green")
+        self.player2 = Player(name2, [], self.pile_count, "magenta")
 
-        self.player1 = Player(name1, half1, self.pile_count, "green")
-        self.player2 = Player(name2, half2, self.pile_count, "magenta")
+        self.ReshuffleCards()
 
         self.current_player == self.player1
 
@@ -226,41 +234,22 @@ class SpitGame(ConsoleInputOutputManipulator):
     def PrintGame(self):
         if self.clear_console_with_every_turn:
             self.ClearConsole()
+
         print()
-        self.player1.PrintCards(print_name_above_cards=True)
-        self.PrintStacks([self.player1.spit_pile, self.player2.spit_pile], self.player1.font_color,
-                         self.player2.font_color)
-        self.player2.PrintCards(print_name_above_cards=False)
+        self.player1.PrintCards(print_name_above_cards=True, print_name_below_cards=False)
+        self.PrintStacks()
+        self.player2.PrintCards(print_name_above_cards=False, print_name_below_cards=True)
         print()
 
-    def PrintStacks(self, card_piles, arrow_color1, arrow_color2, print_size_above_cards=False,
-                    print_size_below_cards=False):
+    def PrintStacks(self):
 
-        row_arrow_above = f" ▼          "
-        row1 = ""
-        row2 = ""
-        row3 = ""
-        row_arrow_below = f"       ▲"
-        pile_sizes_row = ""
+        row_arrow_above = " ▼          "
+        row_arrow_below = "       ▲"
 
-        for pile in card_piles:
-            row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
-            character = getFirst(pile, '░')
-            row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
-            row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
-            pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  "
+        self.PrintCentered(row_arrow_above, self.player1.font_color)
+        self.PrintCardPiles([self.player1.spit_pile, self.player2.spit_pile])
+        self.PrintCentered(row_arrow_below, self.player2.font_color)
 
-        if print_size_above_cards:
-            self.Print(pile_sizes_row.center(50))
-
-        self.Print(row_arrow_above.center(50), arrow_color1)
-        self.Print(row1.center(50))
-        self.Print(row2.center(50))
-        self.Print(row3.center(50))
-        self.Print(row_arrow_below.center(50), arrow_color2)
-
-        if print_size_below_cards:
-            self.Print(pile_sizes_row.center(50))
 
     def PrintRound(self):
         art = f"\

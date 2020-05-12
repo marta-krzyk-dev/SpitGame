@@ -1,22 +1,23 @@
-import termcolor
-from termcolor import colored
-from Project4_Split.helpers import getFirst, tryConvertToInt
-from Project4_Split.ConsoleInputOutputManipulator import ConsoleInputOutputManipulator
+from termcolor import colored, COLORS
+from Project4_Split.CardPrinter import CardPrinter
+from Project4_Split.helpers import getFirst
+from Project4_Split.InputManipulator import InputManipulator
 from random import shuffle
-from Project4_Split.card_helpers import ThereAreValidPairs, ConvertCardToNumericValue, IsValidPair
+from Project4_Split.card_helpers import ThereAreValidPairs, ConvertCardToNumericValue
 
 
-class Player(ConsoleInputOutputManipulator):
+class Player(InputManipulator, CardPrinter):
     #region Constructor
     def __init__(self, name, cards, pile_count, color="green"):
 
-        ConsoleInputOutputManipulator.__init__(self, color)
+        InputManipulator.__init__(self, color)
+        CardPrinter.__init__(self, color)
 
         self.card_piles = []
         self.spit_pile = []
         self.pile_count = pile_count
         self.name = name
-        self.color = color if color in termcolor.COLORS.keys() else "green"
+        self.color = color if color in COLORS.keys() else "green"
         self.score = 0
 
         self.ArrangeCardsIntoPiles(cards)
@@ -127,7 +128,6 @@ class Player(ConsoleInputOutputManipulator):
         front_cards = self.GetFrontCards(omit_empty_piles=False)
         duplicate_indexes = []
 
-        # TODO Reformat loop into comprehension list
         for c in front_cards:
             if c == ' ':
                 continue
@@ -181,8 +181,8 @@ class Player(ConsoleInputOutputManipulator):
     # region Empty spot logic
     def CanMoveCardToEmptySpot(self):
 
-        if self.GetPileCardCount() <= self.pile_count:
-            return False
+        if self.GetPileCardCount() < self.pile_count:
+            return True
 
         can_move = False
         has_empty_pile = False
@@ -231,29 +231,14 @@ class Player(ConsoleInputOutputManipulator):
     # endregion
 
     # region Print methods
-    def PrintCards(self, print_name_above_cards=True):
-
-        row1 = ""
-        row2 = ""
-        row3 = ""
-        pile_sizes_row = ""
-        for pile in self.card_piles:
-            row1 += "┌──┐  " if len(pile) < 2 else "╔══╗  "
-            character = getFirst(pile, '░')
-            row2 += f"│{character.ljust(2)}│  " if len(pile) < 2 else f"║{character.ljust(2)}║  "
-            row3 += "└──┘  " if len(pile) < 2 else "╚══╝  "
-            pile_sizes_row += f"[{str(len(pile))}]".rjust(4) + "  " if len(pile) > 1 else " " * 6
+    def PrintCards(self, print_name_above_cards=False, print_name_below_cards=False):
 
         if print_name_above_cards:
             self.PrintReverse(f"{self.name}".center(50))
-            self.Print(pile_sizes_row.center(50))
 
-        self.Print(row1.center(50))
-        self.Print(row2.center(50))
-        self.Print(row3.center(50))
+        self.PrintCardPiles(self.card_piles, print_size_above_cards=print_name_above_cards, print_size_below_cards=print_name_below_cards)
 
-        if not print_name_above_cards:
-            self.Print(pile_sizes_row.center(50))
+        if print_name_below_cards:
             self.PrintReverse(f"{self.name}".center(50))
     # endregion
 

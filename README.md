@@ -10,10 +10,9 @@ Features:
 - [x] the game asks 2 players for their names (name can consist of any characters, at least 1 character)
 - [x] Save score between rounds
 - [x] print graphical cards onto screen
-- [ ] Defect infinite loop when there are around 5 cards, some can be stacked onto 1 pile, then player is prompted to move card to an empty place
 - [x] User can choose to move a stack a duplicated card with 'y' , 'n'
 - [ ] Redraw game when resuming game
-- [x] Ask player to stack duplicates only once (per duplicate)
+- [x] Ask player to stack duplicates only once (per new duplicate)
 
 TESTS use commands when:
 - [x] Game prompts for player's names
@@ -24,15 +23,9 @@ TESTS use commands when:
 
 MENUAL TESTS:
 - [x] Create player with 15+ character name, check score table
-- [ ] Play 2 full rounds
+- [x] Play 2 full rounds
 - [x] Play 1 full game
 - [ ] Have both players outta moves
-- [ ] In the second round, the winner must be their cards
-
-TODOs
-- [x] Merge method GetInputWithAllowedAnswers into GetInput
-- [ ] Uniform print cards methods (remove some if possible)
-- [x] Bug: If there is the same card under the duplpicate, it won't be caught as new duplicate
 
 Special scenarios:
 - [x] Consider cards: 2 9 9 Q K. The game cannot infinitely prompt user to stack 9s and then move top 9 to empty spot
