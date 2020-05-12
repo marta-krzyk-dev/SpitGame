@@ -2,7 +2,7 @@ from random import shuffle
 
 
 class Deck:
-    faceValues = faceValues = dict(A=14, K=13, Q=12, J=11)  # Static field
+    faceValues = dict(A=14, K=13, Q=12, J=11)  # Static field
 
     def __init__(self):
         self.deck = []
