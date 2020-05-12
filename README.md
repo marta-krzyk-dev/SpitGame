@@ -1,7 +1,7 @@
 # Spit Game
 Spit card console game in Python.
 [How to play Spit?](https://www.youtube.com/watch?v=yv7k6XYzgSo&t=32s)
-This project is made for ![Pirple's Python course](https://www.pirple.com/courses/python-is-easy)
+This project is made for [Pirple's Python course](https://www.pirple.com/courses/python-is-easy)
 
 ![](https://github.com/marta-krzyk-dev/SpitGame/blob/master/Gameplay_GIF.gif?raw=true)
 
